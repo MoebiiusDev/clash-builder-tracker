@@ -1,0 +1,600 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background:
+        linear-gradient(to bottom,
+            #111111,
+            #1a1a1a);
+
+    color: white;
+
+    font-family: Arial, Helvetica, sans-serif;
+
+    min-height: 100vh;
+
+    padding: 30px;
+}
+
+.container {
+    width: 100%;
+    
+    margin: auto;
+}
+
+h1 {
+    text-align: center;
+
+    margin-bottom: 35px;
+
+    font-size: 42px;
+
+    color: #ff4d4d;
+
+    letter-spacing: 1px;
+}
+
+.add-account-box {
+    display: flex;
+
+    gap: 12px;
+
+    justify-content: center;
+
+    margin-bottom: 35px;
+
+    flex-wrap: wrap;
+}
+
+.add-account-box input,
+.add-account-box select {
+    background: #202020;
+
+    color: white;
+
+    border: 1px solid #3a3a3a;
+
+    padding: 12px 14px;
+
+    border-radius: 12px;
+
+    font-size: 15px;
+
+    outline: none;
+}
+
+.add-account-box input:focus,
+.add-account-box select:focus {
+    border-color: #ff4d4d;
+}
+
+button {
+    border: none;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+button:hover {
+    transform: scale(1.03);
+}
+
+#createAccountBtn {
+    background: #ff4d4d;
+
+    color: white;
+
+    padding: 12px 18px;
+
+    border-radius: 12px;
+
+    font-weight: bold;
+}
+
+.account-card {
+    background: #181818;
+
+    border: 1px solid #2e2e2e;
+
+    border-radius: 20px;
+
+    padding: 22px;
+
+    margin-bottom: 30px;
+
+    box-shadow:
+        0 0 15px rgba(0, 0, 0, 0.4);
+}
+
+.account-header {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 25px;
+}
+
+.account-header h2 {
+    font-size: 28px;
+
+    color: #ffffff;
+}
+
+.delete-account {
+    background: #922222;
+
+    color: white;
+
+    padding: 10px 14px;
+
+    border-radius: 10px;
+}
+
+.builders-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(auto-fit, minmax(220px, 1fr));
+
+    gap: 18px;
+}
+
+.builder-card {
+    background: #222222;
+
+    border: 1px solid #303030;
+
+    border-radius: 18px;
+
+    padding: 18px;
+
+    transition: 0.2s;
+
+    min-height: 260px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: space-between;
+}
+
+.builder-card:hover {
+    border-color: #ff4d4d;
+}
+
+.builder-card h3 {
+    margin-bottom: 14px;
+
+    font-size: 20px;
+}
+
+.builder-status {
+    font-size: 14px;
+
+    margin-bottom: 8px;
+
+    min-height: 20px;
+}
+
+.builder-time {
+    font-size: 24px;
+
+    font-weight: bold;
+
+    margin-bottom: 18px;
+}
+
+.builder-free {
+    color: #4ade80;
+}
+
+.builder-busy {
+    color: #facc15;
+}
+
+.builder-finished {
+    color: #ff4d4d;
+}
+
+.builder-input {
+    width: 100%;
+
+    background: #111111;
+
+    color: white;
+
+    border: 1px solid #333333;
+
+    border-radius: 10px;
+
+    padding: 10px;
+
+    margin-bottom: 8px;
+
+    outline: none;
+}
+
+.builder-input:focus {
+    border-color: #ff4d4d;
+}
+
+/* ========================= */
+/* BUTTON ROW */
+/* ========================= */
+
+.card-buttons {
+
+    display: flex;
+
+    gap: 8px;
+
+    margin-top: auto;
+}
+
+.start-btn,
+.clear-btn {
+
+    flex: 1;
+
+    padding: 8px;
+
+    border-radius: 10px;
+
+    font-size: 13px;
+
+    font-weight: bold;
+}
+
+.start-btn {
+
+    background: #ff4d4d;
+
+    color: white;
+}
+
+.clear-btn {
+
+    background: #3a3a3a;
+
+    color: white;
+}
+
+.builders-grid::-webkit-scrollbar {
+    height: 10px;
+}
+
+.builders-grid::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 10px;
+}
+
+.builders-grid::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.modal {
+    position: fixed;
+
+    inset: 0;
+
+    background: rgba(0,0,0,0.75);
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    z-index: 999;
+}
+
+.hidden {
+    display: none;
+}
+
+.modal-content {
+    width: 350px;
+
+    background: #1b1b1b;
+
+    border: 1px solid #333;
+
+    border-radius: 18px;
+
+    padding: 25px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 12px;
+}
+
+.modal-content h2 {
+    text-align: center;
+
+    margin-bottom: 10px;
+
+    color: #ff4d4d;
+}
+
+.modal-content input {
+    background: #111;
+
+    color: white;
+
+    border: 1px solid #333;
+
+    border-radius: 10px;
+
+    padding: 12px;
+
+    outline: none;
+}
+
+.modal-content input:focus {
+    border-color: #ff4d4d;
+}
+
+#saveBuilderBtn {
+    background: #ff4d4d;
+
+    color: white;
+
+    padding: 12px;
+
+    border-radius: 10px;
+
+    font-weight: bold;
+}
+
+#closeModalBtn {
+    background: #333;
+
+    color: white;
+
+    padding: 12px;
+
+    border-radius: 10px;
+}
+
+/* ========================= */
+/* SECTION TITLES */
+/* ========================= */
+
+.section-title {
+
+    font-size: 22px;
+
+    font-weight: bold;
+
+    margin-bottom: 18px;
+
+    padding-left: 10px;
+
+    border-left: 4px solid #ff4d4d;
+}
+
+.builders-section-title {
+    color: #ffb347;
+}
+
+.lab-section-title {
+
+    color: #6cb8ff;
+
+    border-left-color: #6cb8ff;
+}
+
+/* ========================= */
+/* SEPARATORS */
+/* ========================= */
+
+.section-separator {
+
+    width: 2px;
+
+    background: rgba(255,255,255,0.08);
+
+    border-radius: 999px;
+
+    min-height: 220px;
+
+    align-self: stretch;
+}
+
+/* ========================= */
+/* BUILDERS */
+/* ========================= */
+
+.builders-grid,
+.laboratory-grid {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 18px;
+
+    align-items: stretch;
+}
+
+.builder-card,
+.lab-card {
+
+    width: 220px;
+
+    min-height: 200px;
+
+    border-radius: 18px;
+
+    padding: 18px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: space-between;
+
+    transition: 0.2s;
+}
+
+/* BUILDERS NORMAL */
+
+.builder-card {
+
+    background:
+        linear-gradient(
+            to bottom,
+            #3b2a1f,
+            #2b1e16
+        );
+
+    border: 1px solid #5a3f2d;
+}
+
+.builder-card:hover {
+
+    border-color: #ffb347;
+}
+
+/* APPRENTICE */
+
+.apprentice-card {
+
+    background:
+        linear-gradient(
+            to bottom,
+            #403326,
+            #2d241c
+        );
+
+    border: 1px solid #c79a5a;
+}
+
+/* ========================= */
+/* LABORATORY */
+/* ========================= */
+
+.lab-card {
+
+    background:
+        linear-gradient(
+            to bottom,
+            #1d2d42,
+            #172433
+        );
+
+    border: 1px solid #35506d;
+}
+
+.lab-card:hover {
+
+    border-color: #6cb8ff;
+}
+
+/* LAB ASSISTANT */
+
+.assistant-card {
+
+    background:
+        linear-gradient(
+            to bottom,
+            #24384f,
+            #1a2938
+        );
+
+    border: 1px solid #6cb8ff;
+}
+
+/* ========================= */
+/* CARD CONTENT */
+/* ========================= */
+
+.builder-card h3,
+.lab-card h3 {
+
+    font-size: 13px;
+
+    font-weight: 500;
+
+    opacity: 0.65;
+
+    margin-bottom: 10px;
+
+    letter-spacing: 0.5px;
+
+    text-transform: uppercase;
+}
+
+/* NOMBRE DE EDIFICIO / TROPA */
+
+.builder-status {
+
+    font-size: 24px;
+
+    font-weight: bold;
+
+    color: #facc15;
+
+    line-height: 1.15;
+
+    margin-bottom: 18px;
+
+    min-height: 58px;
+
+    display: flex;
+
+    align-items: center;
+}
+
+/* TIEMPO */
+
+.builder-time {
+
+    font-size: 28px;
+
+    font-weight: 800;
+
+    margin-bottom: 18px;
+
+    line-height: 1.1;
+}
+
+/* ========================= */
+/* PETS */
+/* ========================= */
+
+.pets-grid {
+    display: flex;
+
+    gap: 18px;
+
+    margin-top: 15px;
+}
+
+.pets-card {
+    background:
+        linear-gradient(
+            145deg,
+            #2b2240,
+            #1f1830
+        );
+
+    border: 1px solid #5b46a8;
+}
+
+.pets-card:hover {
+    border-color: #8f6dff;
+}
+
+.pets-section-title {
+    border-left: 4px solid #8f6dff;
+}
