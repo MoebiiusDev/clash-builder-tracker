@@ -281,66 +281,68 @@ function renderAccounts() {
 
         card.innerHTML = `
 
-    <div class="account-header">
+        <div class="account-header">
 
-        <h2>${account.name}</h2>
+    <div class="account-name">
 
-        <button
-            class="delete-account"
-            onclick="deleteAccount(${account.id})"
-        >
-            Eliminar Cuenta
-        </button>
+        👑 ${account.name}
 
     </div>
 
-    <!-- BUILDERS -->
-
-    <div class="section-title builders-section-title">
-        🔨 Constructores
-    </div>
-
-<div class="builders-grid">
-
-    ${renderBuilders(account)}
-
-    <div class="section-separator"></div>
-
-    ${renderApprentice(account)}
-
-</div>
-
-    <!-- LAB -->
-
-    <div
-        class="section-title lab-section-title"
-        style="margin-top: 35px;"
+    <button
+        class="delete-account-btn"
+        onclick="deleteAccount(${account.id})"
     >
-        🧪 Investigación
+        Eliminar Cuenta
+    </button>
+
+</div>
+
+<div class="account-layout">
+
+    <div class="account-main">
+
+        <div class="section-title">
+            🔨 Constructores
+        </div>
+
+        ${renderBuilders(account)}
+
+        <div class="section-title lb">
+            🧪 Investigación
+        </div>
+
+        <div class="laboratory-grid">
+
+            ${renderLaboratory(account)}
+
+        </div>
+
+        <div class="section-title lb">
+            🐾 Mascotas
+        </div>
+
+        <div class="pets-grid">
+
+            ${renderPets(account)}
+
+        </div>
+
     </div>
 
-<div class="laboratory-grid">
+    <div class="assistants-panel">
 
-    ${renderLaboratory(account)}
+        <div class="assistants-title">
 
-    <div class="section-separator"></div>
+            Ayudantes
 
-    ${renderLabAssistant(account)}
+        </div>
 
-</div>
+        ${renderApprentice(account)}
 
-<!-- PETS -->
+        ${renderLabAssistant(account)}
 
-<div
-    class="section-title pets-section-title"
-    style="margin-top: 35px;"
->
-    🐾 Mascotas
-</div>
-
-<div class="pets-grid">
-
-    ${renderPets(account)}
+    </div>
 
 </div>
 `;

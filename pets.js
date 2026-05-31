@@ -146,38 +146,48 @@ function renderPets(account) {
     }
 
     return `
-        <div class="builder-card pets-card">
 
-            <h3>Mascota</h3>
+        <div class="compact-row">
 
-            <div class="builder-status">
-                ${pets.name || "Sin mejora"}
+            <div class="compact-info">
+
+                <div class="compact-title">
+                    Mascota
+                </div>
+
+                <div class="compact-name">
+                    ${pets.name || "Sin mejora"}
+                </div>
+
+                <div
+                    class="compact-timer"
+                    id="pets-timer-${account.id}"
+                >
+                    ${status}
+                </div>
+
             </div>
 
-            <div
-                class="builder-time"
-                id="pets-timer-${account.id}"
-            >
-                ${status}
-            </div>
+            <div class="compact-actions">
 
-            <div class="card-buttons> 
-                        <button
-                class="start-btn"
-                onclick="openPetsMenu(${account.id})"
-            >
-                Configurar
-            </button>
+                <button
+                    class="start-btn"
+                    onclick="openPetsMenu(${account.id})"
+                >
+                    Configurar
+                </button>
 
-            <button
-                class="clear-btn"
-                onclick="clearPets(${account.id})"
-            >
-                Limpiar
-            </button>
+                <button
+                    class="clear-btn"
+                    onclick="clearPets(${account.id})"
+                >
+                    Limpiar
+                </button>
+
             </div>
 
         </div>
+
     `;
 }
 

@@ -254,38 +254,48 @@ function renderLaboratory(account) {
     }
 
     return `
-        <div class="lab-card">
 
-            <h3>Laboratorio</h3>
+        <div class="compact-row">
 
-            <div class="builder-status">
-                ${research.name || "Sin investigación"}
+            <div class="compact-info">
+
+                <div class="compact-title">
+                    Laboratorio
+                </div>
+
+                <div class="compact-name">
+                    ${research.name || "Sin investigación"}
+                </div>
+
+                <div
+                    class="compact-timer"
+                    id="lab-timer-${account.id}"
+                >
+                    ${status}
+                </div>
+
             </div>
 
-            <div
-                class="builder-time"
-                id="lab-timer-${account.id}"
-            >
-                ${status}
+            <div class="compact-actions">
+
+                <button
+                    class="start-btn"
+                    onclick="openLaboratoryMenu(${account.id})"
+                >
+                    Configurar
+                </button>
+
+                <button
+                    class="clear-btn"
+                    onclick="clearLaboratory(${account.id})"
+                >
+                    Limpiar
+                </button>
+
             </div>
 
-        <div class="card-buttons"> 
-                    <button
-                class="start-btn"
-                onclick="openLaboratoryMenu(${account.id})"
-            >
-                Configurar
-            </button>
-
-            <button
-                class="clear-btn"
-                onclick="clearLaboratory(${account.id})"
-            >
-                Limpiar
-            </button>
         </div>
 
-        </div>
     `;
 }
 
@@ -298,11 +308,12 @@ function renderLabAssistant(account) {
     const assistant =
         account.laboratory.assistant;
 
-    let status = "⚡ Disponible";
+    let assistantStatus =
+        "⚡ Disponible";
 
     if (assistant.availableAt > Date.now()) {
 
-        status =
+        assistantStatus =
             "💤 " +
             formatTime(
                 assistant.availableAt - Date.now()
@@ -310,38 +321,45 @@ function renderLabAssistant(account) {
     }
 
     return `
-        <div class="lab-card assistant-card">
 
-            <h3>Asistente</h3>
+        <div class="mini-special-card">
 
-            <div class="builder-status">
+            <div class="mini-special-icon">
+                🧪
+            </div>
+
+            <div class="mini-special-title">
+                Asistente Laboratorio
+            </div>
+
+            <div class="mini-special-level">
                 Nivel ${assistant.level}
             </div>
 
             <div
-                class="builder-time"
+                class="mini-special-status"
                 id="assistant-timer-${account.id}"
             >
-                ${status}
+                ${assistantStatus}
             </div>
 
-<div class="card-buttons">
+            <div class="mini-special-buttons">
 
-            <button
-    class="start-btn"
-    onclick="configureLabAssistant(${account.id})"
->
-    Configurar
-</button>
-<button
-    class="clear-btn"
-    onclick="clearLabAssistant(${account.id})"
->
-    Limpiar
-</button>
-</div>
+                <button
+                    class="start-btn"
+                    onclick="configureLabAssistant(${account.id})"
+                >
+                    Configurar
+                </button>
 
+                <button
+                    class="clear-btn"
+                    onclick="clearLabAssistant(${account.id})"
+                >
+                    Limpiar
+                </button>
 
+            </div>
 
         </div>
     `;

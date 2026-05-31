@@ -7,10 +7,10 @@
 body {
     background:
         linear-gradient(to bottom,
-            #111111,
-            #1a1a1a);
+            #0c0c0c,
+            #121212);
 
-    color: white;
+    color: #e5e5e5;
 
     font-family: Arial, Helvetica, sans-serif;
 
@@ -21,20 +21,17 @@ body {
 
 .container {
     width: 100%;
-    
+
     margin: auto;
 }
 
 h1 {
     text-align: center;
-
     margin-bottom: 35px;
-
     font-size: 42px;
-
-    color: #ff4d4d;
-
-    letter-spacing: 1px;
+    color: #ffffff;
+    font-weight: 800;
+    letter-spacing: 2px;
 }
 
 .add-account-box {
@@ -96,9 +93,9 @@ button:hover {
 }
 
 .account-card {
-    background: #181818;
+    background: #131313;
 
-    border: 1px solid #2e2e2e;
+    border: 1px solid #252525;
 
     border-radius: 20px;
 
@@ -176,9 +173,9 @@ button:hover {
 }
 
 .builder-status {
-    font-size: 14px;
+    font-size: 24px;
 
-    margin-bottom: 8px;
+    /* margin-bottom: 8px; */
 
     min-height: 20px;
 }
@@ -284,7 +281,7 @@ button:hover {
 
     inset: 0;
 
-    background: rgba(0,0,0,0.75);
+    background: rgba(0, 0, 0, 0.75);
 
     display: flex;
 
@@ -382,6 +379,10 @@ button:hover {
     border-left: 4px solid #ff4d4d;
 }
 
+.lb {
+    margin-top: 18px;
+}
+
 .builders-section-title {
     color: #ffb347;
 }
@@ -401,7 +402,7 @@ button:hover {
 
     width: 2px;
 
-    background: rgba(255,255,255,0.08);
+    background: rgba(255, 255, 255, 0.08);
 
     border-radius: 999px;
 
@@ -419,11 +420,9 @@ button:hover {
 
     display: flex;
 
-    flex-wrap: wrap;
+    gap: 20px;
 
-    gap: 18px;
-
-    align-items: stretch;
+    align-items: flex-start;
 }
 
 .builder-card,
@@ -451,11 +450,9 @@ button:hover {
 .builder-card {
 
     background:
-        linear-gradient(
-            to bottom,
+        linear-gradient(to bottom,
             #3b2a1f,
-            #2b1e16
-        );
+            #2b1e16);
 
     border: 1px solid #5a3f2d;
 }
@@ -470,11 +467,9 @@ button:hover {
 .apprentice-card {
 
     background:
-        linear-gradient(
-            to bottom,
+        linear-gradient(to bottom,
             #403326,
-            #2d241c
-        );
+            #2d241c);
 
     border: 1px solid #c79a5a;
 }
@@ -486,11 +481,9 @@ button:hover {
 .lab-card {
 
     background:
-        linear-gradient(
-            to bottom,
+        linear-gradient(to bottom,
             #1d2d42,
-            #172433
-        );
+            #172433);
 
     border: 1px solid #35506d;
 }
@@ -505,11 +498,9 @@ button:hover {
 .assistant-card {
 
     background:
-        linear-gradient(
-            to bottom,
+        linear-gradient(to bottom,
             #24384f,
-            #1a2938
-        );
+            #1a2938);
 
     border: 1px solid #6cb8ff;
 }
@@ -546,7 +537,7 @@ button:hover {
 
     line-height: 1.15;
 
-    margin-bottom: 18px;
+    /* margin-bottom: 18px; */
 
     min-height: 58px;
 
@@ -573,20 +564,17 @@ button:hover {
 /* ========================= */
 
 .pets-grid {
-    display: flex;
 
-    gap: 18px;
+    display: block;
 
     margin-top: 15px;
 }
 
 .pets-card {
     background:
-        linear-gradient(
-            145deg,
+        linear-gradient(145deg,
             #2b2240,
-            #1f1830
-        );
+            #1f1830);
 
     border: 1px solid #5b46a8;
 }
@@ -597,4 +585,302 @@ button:hover {
 
 .pets-section-title {
     border-left: 4px solid #8f6dff;
+}
+
+
+/* ========================= */
+/* COMPACT ROWS V2 */
+/* ========================= */
+
+.compact-row {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 15px;
+
+    background: #161616;
+
+    border: 1px solid #2f2f2f;
+
+    border-radius: 12px;
+
+    padding: 12px 16px;
+
+    /* margin-bottom: 10px; */
+
+    transition: 0.2s;
+}
+
+.compact-row:hover {
+
+    border-color: #4a4a4a;
+}
+
+.compact-info {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 18px;
+
+    flex-wrap: wrap;
+
+    flex: 1;
+}
+
+.compact-title {
+
+    font-size: 13px;
+
+    color: #888;
+
+    font-weight: 600;
+
+    min-width: 70px;
+}
+
+.compact-name {
+
+    font-size: 24px;
+
+    font-weight: bold;
+
+    color: #facc15;
+
+    line-height: 1.15;
+
+    /* margin-bottom: 18px; */
+
+    min-height: 58px;
+
+    display: flex;
+
+    align-items: center;
+}
+
+.compact-timer {
+
+    color: #ffd54a;
+
+    font-size: 22px;
+
+    font-weight: 900;
+
+    font-family:
+        "Consolas",
+        monospace;
+
+    letter-spacing: 1px;
+
+    min-width: 180px;
+}
+
+.compact-actions {
+
+    display: flex;
+
+    gap: 8px;
+}
+
+.compact-actions button {
+
+    padding: 6px 12px;
+
+    border-radius: 8px;
+
+    font-size: 12px;
+}
+
+.compact-section {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
+}
+
+.laboratory-grid {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 20px;
+}
+
+.laboratory-grid .compact-row {
+
+    flex: 1;
+}
+
+/* ========================= */
+/* APPRENTICE V2 */
+/* ========================= */
+
+.apprentice-badge {
+
+    font-size: 22px;
+
+    opacity: 0.9;
+}
+
+.mini-special-card {
+
+    width: 220px;
+
+    background: #171717;
+
+    border: 1px solid #2d2d2d;
+
+    border-radius: 14px;
+
+    padding: 16px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    gap: 10px;
+}
+
+.mini-special-icon {
+
+    font-size: 34px;
+}
+
+.mini-special-title {
+
+    font-size: 14px;
+
+    font-weight: bold;
+
+    text-align: center;
+}
+
+.mini-special-level {
+
+    color: #facc15;
+
+    font-weight: bold;
+}
+
+.mini-special-status {
+
+    font-size: 13px;
+
+    text-align: center;
+
+    color: #d0d0d0;
+}
+
+.mini-special-buttons {
+
+    width: 100%;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 6px;
+}
+
+/* ========================= */
+/* ACCOUNT LAYOUT V3 */
+/* ========================= */
+
+.account-layout {
+
+    display: flex;
+
+    gap: 20px;
+
+    align-items: flex-start;
+}
+
+.account-main {
+
+    flex: 1;
+
+    min-width: 0;
+}
+
+.assistants-panel {
+
+    /* width: 240px; */
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 12px;
+}
+
+.assistants-title {
+
+    font-size: 14px;
+    text-align: center;
+
+    font-weight: bold;
+
+    text-transform: uppercase;
+
+    color: #bdbdbd;
+
+    letter-spacing: 1px;
+
+    margin-bottom: 18px;
+}
+
+/* ========================= */
+/* ACCOUNT HEADER */
+/* ========================= */
+
+.account-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 18px;
+}
+
+.account-name {
+
+    color: #facc15;
+
+    font-size: 24px;
+
+    font-weight: 800;
+}
+
+.delete-account-btn {
+
+    background: #7f1d1d;
+
+    color: white;
+
+    border: none;
+
+    padding: 8px 14px;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.delete-account-btn:hover {
+
+    background: #991b1b;
 }

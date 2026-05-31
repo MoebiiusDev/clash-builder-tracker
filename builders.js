@@ -209,7 +209,9 @@ document
 
 function renderBuilders(account) {
 
-    let html = "";
+    let html = `
+        <div class="compact-section">
+    `;
 
     account.builders.forEach((builder, index) => {
 
@@ -235,45 +237,69 @@ function renderBuilders(account) {
             }
         }
 
+        const apprenticeAssigned =
+            account.apprentice &&
+            account.apprentice.assignedBuilder === index;
+
         html += `
-            <div class="builder-card">
 
-                <h3>Builder ${index + 1}</h3>
+            <div class="compact-row">
 
-                <div
-                    class="builder-status ${statusClass}"
-                    id="status-${account.id}-${index}"
-                >
-                    ${builder.building || "Sin construcción"}
+                <div class="compact-info">
+
+                    <div class="compact-title">
+                        🛠️ ${index + 1}
+                    </div>
+
+                    <div
+                        class="compact-name ${statusClass}"
+                        id="status-${account.id}-${index}"
+                    >
+                        ${builder.building || "Sin construcción"}
+                    </div>
+
+                    <div
+                        class="compact-timer"
+                        id="timer-${account.id}-${index}"
+                    >
+                        ${timeText}
+                    </div>
+
+                    ${
+                        apprenticeAssigned
+                        ? `
+                        <div class="apprentice-badge">
+                            👷
+                        </div>
+                        `
+                        : ""
+                    }
+
                 </div>
 
-                <div
-                    class="builder-time"
-                    id="timer-${account.id}-${index}"
-                >
-                    ${timeText}
+                <div class="compact-actions">
+
+                    <button
+                        class="start-btn"
+                        onclick="openBuilderMenu(${account.id}, ${index})"
+                    >
+                        Configurar
+                    </button>
+
+                    <button
+                        class="clear-btn"
+                        onclick="clearBuilder(${account.id}, ${index})"
+                    >
+                        Limpiar
+                    </button>
+
                 </div>
 
-                <div class="card-buttons">
-
-                <button
-                    class="start-btn"
-                    onclick="openBuilderMenu(${account.id}, ${index})"
-                >
-                    Configurar
-                </button>
-
-
-                <button
-                    class="clear-btn"
-                    onclick="clearBuilder(${account.id}, ${index})"
-                >
-                    Limpiar
-                </button>
-                </div>
             </div>
         `;
     });
+
+    html += `</div>`;
 
     return html;
 }
@@ -284,9 +310,11 @@ function renderBuilders(account) {
 
 function renderApprentice(account) {
 
-    const apprentice = account.apprentice;
+    const apprentice =
+        account.apprentice;
 
-    let apprenticeStatus = "⚡ Disponible";
+    let apprenticeStatus =
+        "⚡ Disponible";
 
     if (apprentice.availableAt > Date.now()) {
 
@@ -298,50 +326,46 @@ function renderApprentice(account) {
     }
 
     return `
-        <div class="builder-card apprentice-card">
 
-            <h3>Constructor Aprendiz</h3>
+        <div class="mini-special-card">
 
-            <div class="builder-status">
+            <div class="mini-special-icon">
+                👷
+            </div>
+
+            <div class="mini-special-title">
+                Constructor Aprendiz
+            </div>
+
+            <div class="mini-special-level">
                 Nivel ${apprentice.level}
             </div>
 
             <div
-    class="builder-time"
-    id="apprentice-timer-${account.id}"
->
-    ${apprenticeStatus}
-</div>
+                class="mini-special-status"
+                id="apprentice-timer-${account.id}"
+            >
+                ${apprenticeStatus}
+            </div>
 
-            <div class="builder-status">
+            <div class="mini-special-buttons">
 
-                ${apprentice.assignedBuilder !== null
+                <button
+                    class="start-btn"
+                    onclick="configureApprentice(${account.id})"
+                >
+                    Configurar
+                </button>
 
-            ? `Asignado a Builder ${apprentice.assignedBuilder + 1
-            }`
-
-            : "Sin asignar"
-        }
+                <button
+                    class="clear-btn"
+                    onclick="clearApprentice(${account.id})"
+                >
+                    Limpiar
+                </button>
 
             </div>
 
-
-            <div class="card-buttons">
-
-            <button
-                class="start-btn"
-                onclick="configureApprentice(${account.id})"
-            >
-                Configurar
-            </button>
-
-            <button
-                class="clear-btn"
-                onclick="clearApprentice(${account.id})"
-            >
-                Limpiar
-            </button>
-</div>
         </div>
     `;
 }
