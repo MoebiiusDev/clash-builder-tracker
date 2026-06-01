@@ -243,7 +243,7 @@ function renderBuilders(account) {
 
         html += `
 
-            <div class="compact-row">
+            <div class="compact-row ${apprenticeAssigned ? 'has-apprentice' : ''}">
 
                 <div class="compact-info">
 
@@ -258,6 +258,12 @@ function renderBuilders(account) {
                         ${builder.building || "Sin construcción"}
                     </div>
 
+                    ${
+                        apprenticeAssigned
+                        ? `<div class="apprentice-badge">Aprendiz</div>`
+                        : `<div></div>`
+                    }
+
                     <div
                         class="compact-timer"
                         id="timer-${account.id}-${index}"
@@ -265,15 +271,7 @@ function renderBuilders(account) {
                         ${timeText}
                     </div>
 
-                    ${
-                        apprenticeAssigned
-                        ? `
-                        <div class="apprentice-badge">
-                            👷
-                        </div>
-                        `
-                        : ""
-                    }
+                    
 
                 </div>
 

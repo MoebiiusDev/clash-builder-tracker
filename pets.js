@@ -166,6 +166,8 @@ function renderPets(account) {
                     ${status}
                 </div>
 
+                <div></div>
+
             </div>
 
             <div class="compact-actions">

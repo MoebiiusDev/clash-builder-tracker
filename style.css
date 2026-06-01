@@ -1,79 +1,83 @@
+/* ========================= */
+/* RESET & BASE */
+/* ========================= */
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
+@import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;800&family=Share+Tech+Mono&display=swap');
+
 body {
-    background:
-        linear-gradient(to bottom,
-            #0c0c0c,
-            #121212);
-
+    background: #0d0d0f;
     color: #e5e5e5;
-
-    font-family: Arial, Helvetica, sans-serif;
-
+    font-family: 'Exo 2', Arial, sans-serif;
     min-height: 100vh;
-
     padding: 30px;
 }
 
+/* ========================= */
+/* LAYOUT */
+/* ========================= */
+
 .container {
     width: 100%;
-
     margin: auto;
 }
 
 h1 {
     text-align: center;
     margin-bottom: 35px;
-    font-size: 42px;
-    color: #ffffff;
+    font-size: 38px;
     font-weight: 800;
     letter-spacing: 2px;
+    background: linear-gradient(135deg, #f5c842 0%, #e08030 60%, #c44a1a 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
+
+/* ========================= */
+/* ADD ACCOUNT BOX */
+/* ========================= */
 
 .add-account-box {
     display: flex;
-
     gap: 12px;
-
     justify-content: center;
-
     margin-bottom: 35px;
-
     flex-wrap: wrap;
 }
 
 .add-account-box input,
 .add-account-box select {
-    background: #202020;
-
-    color: white;
-
-    border: 1px solid #3a3a3a;
-
+    background: #1a1a1e;
+    color: #e5e5e5;
+    border: 1px solid #2e2e38;
     padding: 12px 14px;
-
-    border-radius: 12px;
-
+    border-radius: 10px;
     font-size: 15px;
-
+    font-family: inherit;
     outline: none;
+    transition: border-color 0.2s;
 }
 
 .add-account-box input:focus,
 .add-account-box select:focus {
-    border-color: #ff4d4d;
+    border-color: #e08030;
 }
+
+/* ========================= */
+/* BUTTONS */
+/* ========================= */
 
 button {
     border: none;
-
     cursor: pointer;
-
     transition: 0.2s ease;
+    font-family: inherit;
 }
 
 button:hover {
@@ -81,214 +85,362 @@ button:hover {
 }
 
 #createAccountBtn {
-    background: #ff4d4d;
-
+    background: linear-gradient(135deg, #e08030, #c44a1a);
     color: white;
-
-    padding: 12px 18px;
-
-    border-radius: 12px;
-
-    font-weight: bold;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 15px;
 }
 
+.start-btn {
+    background: linear-gradient(135deg, #e08030, #c44a1a);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.clear-btn {
+    background: #252530;
+    color: #aaa;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.clear-btn:hover {
+    background: #32323f;
+    color: #ccc;
+}
+
+/* ========================= */
+/* ACCOUNT CARD */
+/* ========================= */
+
 .account-card {
-    background: #131313;
-
-    border: 1px solid #252525;
-
-    border-radius: 20px;
-
+    background: #111114;
+    border: 1px solid #202028;
+    border-radius: 18px;
     padding: 22px;
-
-    margin-bottom: 30px;
-
-    box-shadow:
-        0 0 15px rgba(0, 0, 0, 0.4);
+    margin-bottom: 28px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
 }
 
 .account-header {
     display: flex;
-
     justify-content: space-between;
-
     align-items: center;
-
-    margin-bottom: 25px;
+    margin-bottom: 20px;
 }
 
-.account-header h2 {
-    font-size: 28px;
-
-    color: #ffffff;
+.account-name {
+    color: #f5c842;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
 }
 
-.delete-account {
-    background: #922222;
-
-    color: white;
-
-    padding: 10px 14px;
-
-    border-radius: 10px;
-}
-
-.builders-grid {
-    display: grid;
-
-    grid-template-columns:
-        repeat(auto-fit, minmax(220px, 1fr));
-
-    gap: 18px;
-}
-
-.builder-card {
-    background: #222222;
-
-    border: 1px solid #303030;
-
-    border-radius: 18px;
-
-    padding: 18px;
-
+.delete-account-btn {
+    background: #2a1515;
+    color: #cc5555;
+    border: 1px solid #3d1f1f;
+    padding: 7px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
     transition: 0.2s;
+}
 
-    min-height: 260px;
+.delete-account-btn:hover {
+    background: #3d1f1f;
+    color: #ff6666;
+    transform: scale(1.03);
+}
 
+/* ========================= */
+/* ACCOUNT LAYOUT */
+/* ========================= */
+
+.account-layout {
     display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
 
+.account-main {
+    flex: 1;
+    min-width: 0;
+}
+
+.assistants-panel {
+    display: flex;
     flex-direction: column;
+    gap: 12px;
+}
 
+.assistants-title {
+    font-size: 11px;
+    text-align: center;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #555;
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+}
+
+/* ========================= */
+/* SECTION TITLES */
+/* ========================= */
+
+.section-title {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    padding-left: 10px;
+    border-left: 3px solid #e08030;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #aaa;
+}
+
+.lb {
+    margin-top: 18px;
+}
+
+/* ========================= */
+/* COMPACT ROWS (Builders / Lab / Pets) */
+/* ========================= */
+
+.compact-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.compact-row {
+    display: flex;
+    align-items: center;
     justify-content: space-between;
+    gap: 12px;
+    background: #16161a;
+    border: 1px solid #242430;
+    border-radius: 10px;
+    padding: 10px 14px;
+    transition: border-color 0.2s;
 }
 
-.builder-card:hover {
-    border-color: #ff4d4d;
+.compact-row:hover {
+    border-color: #38384a;
 }
 
-.builder-card h3 {
-    margin-bottom: 14px;
+/* Fila con aprendiz asignado */
+.compact-row.has-apprentice {
+    border-color: #4a3a18;
+    background: #18160e;
+    box-shadow: inset 0 0 0 1px rgba(240, 180, 40, 0.08);
+}
 
-    font-size: 20px;
+.compact-row.has-apprentice:hover {
+    border-color: #7a6020;
+}
+
+/* ========================= */
+/* COMPACT INFO */
+/* ========================= */
+
+.compact-info {
+    display: grid;
+    grid-template-columns: 42px 1fr 160px auto;
+    align-items: center;
+    gap: 14px;
+    flex: 1;
+    min-width: 0;
+}
+
+.compact-title {
+    font-size: 12px;
+    color: #555;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.compact-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #d0c090;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0 100px;
 }
 
 .builder-status {
-    font-size: 24px;
-
-    /* margin-bottom: 8px; */
-
-    min-height: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #d0c090;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0 100px;
 }
 
-.builder-time {
-    font-size: 24px;
-
-    font-weight: bold;
-
-    margin-bottom: 18px;
+.compact-name.builder-free {
+    color: #5a8a5a;
+    font-style: italic;
+    font-weight: 400;
 }
 
-.builder-free {
-    color: #4ade80;
+.compact-name.builder-busy {
+    color: #d0c090;
 }
 
-.builder-busy {
-    color: #facc15;
+.compact-name.builder-finished {
+    color: #e08030;
 }
 
-.builder-finished {
-    color: #ff4d4d;
-}
-
-.builder-input {
-    width: 100%;
-
-    background: #111111;
-
-    color: white;
-
-    border: 1px solid #333333;
-
-    border-radius: 10px;
-
-    padding: 10px;
-
-    margin-bottom: 8px;
-
-    outline: none;
-}
-
-.builder-input:focus {
-    border-color: #ff4d4d;
+.compact-timer {
+    font-size: 14px;
+    font-weight: 700;
+    font-family: 'Share Tech Mono', 'Consolas', monospace;
+    color: #f5c842;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
 }
 
 /* ========================= */
-/* BUTTON ROW */
+/* APPRENTICE BADGE */
 /* ========================= */
 
-.card-buttons {
-
+.apprentice-badge {
     display: flex;
-
-    gap: 8px;
-
-    margin-top: auto;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    background: rgba(240, 180, 40, 0.10);
+    border: 1px solid rgba(240, 180, 40, 0.25);
+    border-radius: 6px;
+    padding: 3px 8px;
+    font-size: 11px;
+    color: #c8a030;
+    font-weight: 600;
+    white-space: nowrap;
 }
 
-.start-btn,
-.clear-btn {
-
-    flex: 1;
-
-    padding: 8px;
-
-    border-radius: 10px;
-
+.apprentice-badge::before {
+    content: '👷';
     font-size: 13px;
-
-    font-weight: bold;
 }
 
-.start-btn {
+/* ========================= */
+/* COMPACT ACTIONS */
+/* ========================= */
 
-    background: #ff4d4d;
-
-    color: white;
+.compact-actions {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
 }
 
-.clear-btn {
+/* ========================= */
+/* LABORATORY GRID */
+/* ========================= */
 
-    background: #3a3a3a;
-
-    color: white;
+.laboratory-grid {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
 }
 
-.builders-grid::-webkit-scrollbar {
-    height: 10px;
+.laboratory-grid .compact-row {
+    flex: 1;
 }
 
-.builders-grid::-webkit-scrollbar-thumb {
-    background: #444;
-    border-radius: 10px;
+/* ========================= */
+/* PETS GRID */
+/* ========================= */
+
+.pets-grid {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
 }
 
-.builders-grid::-webkit-scrollbar-track {
-    background: transparent;
+.pets-grid .compact-row {
+    flex: 1;
 }
+
+/* ========================= */
+/* MINI SPECIAL CARDS (Ayudantes) */
+/* ========================= */
+
+.mini-special-card {
+    width: 190px;
+    background: #13131a;
+    border: 1px solid #242430;
+    border-radius: 12px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.mini-special-icon {
+    font-size: 28px;
+}
+
+.mini-special-title {
+    font-size: 12px;
+    font-weight: 700;
+    text-align: center;
+    color: #aaa;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.mini-special-level {
+    color: #f5c842;
+    font-weight: 700;
+    font-size: 13px;
+}
+
+.mini-special-status {
+    font-size: 12px;
+    text-align: center;
+    color: #888;
+    font-family: 'Share Tech Mono', monospace;
+}
+
+.mini-special-buttons {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 4px;
+}
+
+.mini-special-buttons .start-btn,
+.mini-special-buttons .clear-btn {
+    width: 100%;
+    padding: 6px;
+    font-size: 11px;
+}
+
+/* ========================= */
+/* MODALS */
+/* ========================= */
 
 .modal {
     position: fixed;
-
     inset: 0;
-
-    background: rgba(0, 0, 0, 0.75);
-
+    background: rgba(0, 0, 0, 0.80);
     display: flex;
-
     justify-content: center;
-
     align-items: center;
-
     z-index: 999;
 }
 
@@ -297,590 +449,84 @@ button:hover {
 }
 
 .modal-content {
-    width: 350px;
-
-    background: #1b1b1b;
-
-    border: 1px solid #333;
-
-    border-radius: 18px;
-
-    padding: 25px;
-
+    width: 340px;
+    background: #14141a;
+    border: 1px solid #2a2a38;
+    border-radius: 16px;
+    padding: 24px;
     display: flex;
-
     flex-direction: column;
-
-    gap: 12px;
+    gap: 10px;
 }
 
 .modal-content h2 {
     text-align: center;
-
-    margin-bottom: 10px;
-
-    color: #ff4d4d;
-}
-
-.modal-content input {
-    background: #111;
-
-    color: white;
-
-    border: 1px solid #333;
-
-    border-radius: 10px;
-
-    padding: 12px;
-
-    outline: none;
-}
-
-.modal-content input:focus {
-    border-color: #ff4d4d;
-}
-
-#saveBuilderBtn {
-    background: #ff4d4d;
-
-    color: white;
-
-    padding: 12px;
-
-    border-radius: 10px;
-
-    font-weight: bold;
-}
-
-#closeModalBtn {
-    background: #333;
-
-    color: white;
-
-    padding: 12px;
-
-    border-radius: 10px;
-}
-
-/* ========================= */
-/* SECTION TITLES */
-/* ========================= */
-
-.section-title {
-
-    font-size: 22px;
-
-    font-weight: bold;
-
-    margin-bottom: 18px;
-
-    padding-left: 10px;
-
-    border-left: 4px solid #ff4d4d;
-}
-
-.lb {
-    margin-top: 18px;
-}
-
-.builders-section-title {
-    color: #ffb347;
-}
-
-.lab-section-title {
-
-    color: #6cb8ff;
-
-    border-left-color: #6cb8ff;
-}
-
-/* ========================= */
-/* SEPARATORS */
-/* ========================= */
-
-.section-separator {
-
-    width: 2px;
-
-    background: rgba(255, 255, 255, 0.08);
-
-    border-radius: 999px;
-
-    min-height: 220px;
-
-    align-self: stretch;
-}
-
-/* ========================= */
-/* BUILDERS */
-/* ========================= */
-
-.builders-grid,
-.laboratory-grid {
-
-    display: flex;
-
-    gap: 20px;
-
-    align-items: flex-start;
-}
-
-.builder-card,
-.lab-card {
-
-    width: 220px;
-
-    min-height: 200px;
-
-    border-radius: 18px;
-
-    padding: 18px;
-
-    display: flex;
-
-    flex-direction: column;
-
-    justify-content: space-between;
-
-    transition: 0.2s;
-}
-
-/* BUILDERS NORMAL */
-
-.builder-card {
-
-    background:
-        linear-gradient(to bottom,
-            #3b2a1f,
-            #2b1e16);
-
-    border: 1px solid #5a3f2d;
-}
-
-.builder-card:hover {
-
-    border-color: #ffb347;
-}
-
-/* APPRENTICE */
-
-.apprentice-card {
-
-    background:
-        linear-gradient(to bottom,
-            #403326,
-            #2d241c);
-
-    border: 1px solid #c79a5a;
-}
-
-/* ========================= */
-/* LABORATORY */
-/* ========================= */
-
-.lab-card {
-
-    background:
-        linear-gradient(to bottom,
-            #1d2d42,
-            #172433);
-
-    border: 1px solid #35506d;
-}
-
-.lab-card:hover {
-
-    border-color: #6cb8ff;
-}
-
-/* LAB ASSISTANT */
-
-.assistant-card {
-
-    background:
-        linear-gradient(to bottom,
-            #24384f,
-            #1a2938);
-
-    border: 1px solid #6cb8ff;
-}
-
-/* ========================= */
-/* CARD CONTENT */
-/* ========================= */
-
-.builder-card h3,
-.lab-card h3 {
-
-    font-size: 13px;
-
-    font-weight: 500;
-
-    opacity: 0.65;
-
-    margin-bottom: 10px;
-
+    margin-bottom: 8px;
+    font-size: 18px;
+    font-weight: 800;
+    color: #f5c842;
     letter-spacing: 0.5px;
-
-    text-transform: uppercase;
 }
 
-/* NOMBRE DE EDIFICIO / TROPA */
+.modal-content input,
+.modal-content select {
+    background: #0e0e14;
+    color: #e5e5e5;
+    border: 1px solid #2a2a38;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s;
+}
 
-.builder-status {
+.modal-content input:focus,
+.modal-content select:focus {
+    border-color: #e08030;
+}
 
-    font-size: 24px;
-
-    font-weight: bold;
-
-    color: #facc15;
-
-    line-height: 1.15;
-
-    /* margin-bottom: 18px; */
-
-    min-height: 58px;
-
+.modal-content label {
     display: flex;
-
     align-items: center;
-}
-
-/* TIEMPO */
-
-.builder-time {
-
-    font-size: 28px;
-
-    font-weight: 800;
-
-    margin-bottom: 18px;
-
-    line-height: 1.1;
-}
-
-/* ========================= */
-/* PETS */
-/* ========================= */
-
-.pets-grid {
-
-    display: block;
-
-    margin-top: 15px;
-}
-
-.pets-card {
-    background:
-        linear-gradient(145deg,
-            #2b2240,
-            #1f1830);
-
-    border: 1px solid #5b46a8;
-}
-
-.pets-card:hover {
-    border-color: #8f6dff;
-}
-
-.pets-section-title {
-    border-left: 4px solid #8f6dff;
-}
-
-
-/* ========================= */
-/* COMPACT ROWS V2 */
-/* ========================= */
-
-.compact-row {
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: space-between;
-
-    gap: 15px;
-
-    background: #161616;
-
-    border: 1px solid #2f2f2f;
-
-    border-radius: 12px;
-
-    padding: 12px 16px;
-
-    /* margin-bottom: 10px; */
-
-    transition: 0.2s;
-}
-
-.compact-row:hover {
-
-    border-color: #4a4a4a;
-}
-
-.compact-info {
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 18px;
-
-    flex-wrap: wrap;
-
-    flex: 1;
-}
-
-.compact-title {
-
-    font-size: 13px;
-
-    color: #888;
-
-    font-weight: 600;
-
-    min-width: 70px;
-}
-
-.compact-name {
-
-    font-size: 24px;
-
-    font-weight: bold;
-
-    color: #facc15;
-
-    line-height: 1.15;
-
-    /* margin-bottom: 18px; */
-
-    min-height: 58px;
-
-    display: flex;
-
-    align-items: center;
-}
-
-.compact-timer {
-
-    color: #ffd54a;
-
-    font-size: 22px;
-
-    font-weight: 900;
-
-    font-family:
-        "Consolas",
-        monospace;
-
-    letter-spacing: 1px;
-
-    min-width: 180px;
-}
-
-.compact-actions {
-
-    display: flex;
-
     gap: 8px;
-}
-
-.compact-actions button {
-
-    padding: 6px 12px;
-
-    border-radius: 8px;
-
-    font-size: 12px;
-}
-
-.compact-section {
-
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 10px;
-}
-
-.laboratory-grid {
-
-    display: flex;
-
-    align-items: flex-start;
-
-    gap: 20px;
-}
-
-.laboratory-grid .compact-row {
-
-    flex: 1;
-}
-
-/* ========================= */
-/* APPRENTICE V2 */
-/* ========================= */
-
-.apprentice-badge {
-
-    font-size: 22px;
-
-    opacity: 0.9;
-}
-
-.mini-special-card {
-
-    width: 220px;
-
-    background: #171717;
-
-    border: 1px solid #2d2d2d;
-
-    border-radius: 14px;
-
-    padding: 16px;
-
-    display: flex;
-
-    flex-direction: column;
-
-    align-items: center;
-
-    gap: 10px;
-}
-
-.mini-special-icon {
-
-    font-size: 34px;
-}
-
-.mini-special-title {
-
     font-size: 14px;
-
-    font-weight: bold;
-
-    text-align: center;
-}
-
-.mini-special-level {
-
-    color: #facc15;
-
-    font-weight: bold;
-}
-
-.mini-special-status {
-
-    font-size: 13px;
-
-    text-align: center;
-
-    color: #d0d0d0;
-}
-
-.mini-special-buttons {
-
-    width: 100%;
-
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 6px;
-}
-
-/* ========================= */
-/* ACCOUNT LAYOUT V3 */
-/* ========================= */
-
-.account-layout {
-
-    display: flex;
-
-    gap: 20px;
-
-    align-items: flex-start;
-}
-
-.account-main {
-
-    flex: 1;
-
-    min-width: 0;
-}
-
-.assistants-panel {
-
-    /* width: 240px; */
-
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 12px;
-}
-
-.assistants-title {
-
-    font-size: 14px;
-    text-align: center;
-
-    font-weight: bold;
-
-    text-transform: uppercase;
-
-    color: #bdbdbd;
-
-    letter-spacing: 1px;
-
-    margin-bottom: 18px;
-}
-
-/* ========================= */
-/* ACCOUNT HEADER */
-/* ========================= */
-
-.account-header {
-
-    display: flex;
-
-    justify-content: space-between;
-
-    align-items: center;
-
-    margin-bottom: 18px;
-}
-
-.account-name {
-
-    color: #facc15;
-
-    font-size: 24px;
-
-    font-weight: 800;
-}
-
-.delete-account-btn {
-
-    background: #7f1d1d;
-
-    color: white;
-
-    border: none;
-
-    padding: 8px 14px;
-
-    border-radius: 8px;
-
+    color: #aaa;
     cursor: pointer;
-
-    transition: 0.2s;
 }
 
-.delete-account-btn:hover {
+#saveBuilderBtn,
+#saveApprenticeBtn,
+#saveLaboratoryBtn,
+#saveLabAssistantBtn,
+#savePetsBtn {
+    background: linear-gradient(135deg, #e08030, #c44a1a);
+    color: white;
+    padding: 11px;
+    border-radius: 9px;
+    font-weight: 700;
+    font-size: 14px;
+    margin-top: 4px;
+}
 
-    background: #991b1b;
+#closeModalBtn,
+#closeApprenticeBtn,
+#closeLaboratoryBtn,
+#closeLabAssistantBtn,
+#closePetsBtn {
+    background: #1e1e28;
+    color: #888;
+    border: 1px solid #2a2a38;
+    padding: 10px;
+    border-radius: 9px;
+    font-size: 13px;
+}
+
+#closeModalBtn:hover,
+#closeApprenticeBtn:hover,
+#closeLaboratoryBtn:hover,
+#closeLabAssistantBtn:hover,
+#closePetsBtn:hover {
+    background: #252530;
+    color: #bbb;
 }
