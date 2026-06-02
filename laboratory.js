@@ -3,6 +3,7 @@
 // =========================
 
 let currentLaboratoryAccount = null;
+let currentLaboratoryTarget = "main"; // "main" o "goblin"
 
 // =========================
 // OPEN LAB MENU
@@ -11,6 +12,7 @@ let currentLaboratoryAccount = null;
 function openLaboratoryMenu(accountId) {
 
     currentLaboratoryAccount = accountId;
+    currentLaboratoryTarget = "main";
 
     document
         .getElementById("laboratoryModal")
@@ -126,13 +128,20 @@ if (saveLaboratoryBtn) {
                 (hours * 60 * 60 * 1000) +
                 (minutes * 60 * 1000);
 
-            account.laboratory.research = {
+            if (currentLaboratoryTarget === "goblin") {
 
-                name,
+                account.goblinLab = {
+                    name,
+                    finishTime: Date.now() + totalMs
+                };
 
-                finishTime:
-                    Date.now() + totalMs
-            };
+            } else {
+
+                account.laboratory.research = {
+                    name,
+                    finishTime: Date.now() + totalMs
+                };
+            }
 
             saveAccounts();
             renderAccounts();
@@ -235,6 +244,13 @@ function renderLaboratory(account) {
     const research =
         account.laboratory.research;
 
+    const assistant =
+        account.laboratory.assistant;
+
+    const assistantAssigned =
+        assistant &&
+        assistant.enabled;
+
     let status = "Libre";
 
     if (research.finishTime) {
@@ -255,7 +271,7 @@ function renderLaboratory(account) {
 
     return `
 
-        <div class="compact-row">
+        <div class="compact-row ${assistantAssigned ? 'has-assistant' : ''}">
 
             <div class="compact-info">
 
@@ -274,7 +290,11 @@ function renderLaboratory(account) {
                     ${status}
                 </div>
 
-                <div></div>
+                ${
+                    assistantAssigned
+                    ? `<div class="assistant-badge">Asistente</div>`
+                    : `<div></div>`
+                }
 
             </div>
 
@@ -516,6 +536,150 @@ function updateLaboratoryTimers() {
             assistant.enabled = false;
 
             saveAccounts();
+        }
+    });
+}
+// =========================
+// GOBLIN LAB — abre modal estándar de laboratorio
+// =========================
+
+function openGoblinLabMenu(accountId) {
+
+    currentLaboratoryAccount = accountId;
+    currentLaboratoryTarget = "goblin"; // clave especial
+
+    const account = accounts.find(acc => acc.id === accountId);
+    const gl = account.goblinLab;
+
+    document.getElementById("laboratoryName").value = gl.name || "";
+    document.getElementById("laboratoryDays").value = "";
+    document.getElementById("laboratoryHours").value = "";
+    document.getElementById("laboratoryMinutes").value = "";
+
+    document
+        .getElementById("laboratoryModal")
+        .classList.remove("hidden");
+}
+
+// =========================
+// RENDER GOBLIN LAB (fila verde en investigación)
+// =========================
+
+function renderGoblinLab(account) {
+
+    const gl = account.goblinLab;
+
+    let status = "Libre";
+
+    if (gl.finishTime) {
+
+        const remaining = gl.finishTime - Date.now();
+
+        if (remaining > 0) {
+            status = formatTime(remaining);
+        } else {
+            status = "Finalizado";
+        }
+    }
+
+    const assistantAssigned =
+        account.laboratory.assistant &&
+        account.laboratory.assistant.enabled &&
+        account.laboratory.assistant.assignedTarget === "goblin";
+
+    return `
+        <div class="compact-row goblin-row ${assistantAssigned ? 'has-assistant' : ''}">
+
+            <div class="compact-info">
+
+                <div class="compact-title">
+                    🧌 Duende
+                </div>
+
+                <div class="compact-name"
+                    id="status-goblin-lab-${account.id}"
+                >
+                    ${gl.name || "Sin investigación"}
+                </div>
+
+                <div
+                    class="compact-timer"
+                    id="timer-goblin-lab-${account.id}"
+                >
+                    ${status}
+                </div>
+
+                <div></div>
+
+            </div>
+
+            <div class="compact-actions">
+
+                <button
+                    class="start-btn"
+                    onclick="openGoblinLabMenu(${account.id})"
+                >
+                    Configurar
+                </button>
+
+                <button
+                    class="clear-btn"
+                    onclick="clearGoblinLab(${account.id})"
+                >
+                    Limpiar
+                </button>
+
+            </div>
+
+        </div>
+    `;
+}
+
+// =========================
+// CLEAR GOBLIN LAB
+// =========================
+
+function clearGoblinLab(accountId) {
+
+    const account =
+        accounts.find(acc => acc.id === accountId);
+
+    account.goblinLab = {
+        name: "",
+        finishTime: null
+    };
+
+    saveAccounts();
+    renderAccounts();
+}
+
+// =========================
+// UPDATE GOBLIN LAB TIMER
+// =========================
+
+function updateGoblinLabTimers() {
+
+    accounts.forEach(account => {
+
+        const gl = account.goblinLab;
+
+        const timerEl = document.getElementById(
+            `timer-goblin-lab-${account.id}`
+        );
+
+        if (!timerEl) return;
+
+        if (!gl.finishTime) {
+            timerEl.textContent = "Libre";
+            return;
+        }
+
+        const remaining = gl.finishTime - Date.now();
+
+        if (remaining > 0) {
+            timerEl.textContent = formatTime(remaining);
+        } else {
+            timerEl.textContent = "Finalizado";
         }
     });
 }

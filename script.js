@@ -15,94 +15,67 @@ let accounts =
 
 accounts.forEach(account => {
 
-    // BUILDERS
-    if (!account.builders) {
-        account.builders = [];
-    }
+    if (!account.builders) account.builders = [];
 
-    // CONSTRUCTOR APRENDIZ
     if (!account.apprentice) {
-
         account.apprentice = {
-
-            level: 1,
-
-            assignedBuilder: null,
-
-            availableAt: Date.now(),
-
-            enabled: false
+            level: 1, assignedBuilder: null,
+            availableAt: Date.now(), enabled: false
         };
     }
-
-    // LABORATORIO
 
     if (!account.laboratory) {
-
         account.laboratory = {
-
-            research: {
-
-                name: "",
-
-                finishTime: null
-            },
-
-            assistant: {
-
-                level: 1,
-
-                availableAt: Date.now(),
-
-                enabled: false
-            }
+            research: { name: "", finishTime: null },
+            assistant: { level: 1, availableAt: Date.now(), enabled: false }
         };
     }
 
-    // FIX CUENTAS ANTIGUAS
-
     if (!account.laboratory.research) {
+        account.laboratory.research = { name: "", finishTime: null };
+    }
 
-        account.laboratory.research = {
+    if (!account.laboratory.assistant) {
+        account.laboratory.assistant = {
+            level: 1, availableAt: Date.now(), enabled: false
+        };
+    }
 
-            name: "",
+    if (!account.pets) {
+        account.pets = { name: "", finishTime: null };
+    }
 
+    // NUEVOS AYUDANTES
+    if (!account.helpers) {
+        account.helpers = {
+            alchemist: { level: 1, availableAt: Date.now(), active: false },
+            digger:    { availableAt: Date.now(), active: false }
+        };
+    }
+
+    if (!account.helpers.alchemist) {
+        account.helpers.alchemist = {
+            level: 1, availableAt: Date.now(), active: false
+        };
+    }
+
+    if (!account.helpers.digger) {
+        account.helpers.digger = {
+            availableAt: Date.now(), active: false
+        };
+    }
+
+    // DUENDES — estructura simple igual que builder/lab
+    if (!account.goblinBuilder) {
+        account.goblinBuilder = {
+            building: "",
             finishTime: null
         };
     }
 
-    if (!account.laboratory.assistant) {
-
-        account.laboratory.assistant = {
-
-            level: 1,
-
-            availableAt: Date.now(),
-
-            enabled: false
-        };
-    }
-
-    // ASISTENTE LAB
-    if (!account.labAssistant) {
-
-        account.labAssistant = {
-
-            level: 1,
-
-            availableAt: Date.now(),
-
-            enabled: false
-        };
-    }
-
-    // MASCOTAS
-    if (!account.pets) {
-
-        account.pets = {
-
+    if (!account.goblinLab) {
+        account.goblinLab = {
             name: "",
-
             finishTime: null
         };
     }
@@ -117,87 +90,53 @@ saveAccounts();
 createAccountBtn.addEventListener("click", () => {
 
     const playerName =
-        document.getElementById("playerName")
-            .value
-            .trim();
+        document.getElementById("playerName").value.trim();
 
     const builderCount =
-        parseInt(
-            document.getElementById("builderCount").value
-        );
+        parseInt(document.getElementById("builderCount").value);
 
     if (!playerName) return;
 
     const account = {
 
         id: Date.now(),
-
         name: playerName,
-
-        // =========================
-        // BUILDERS
-        // =========================
 
         builders: [],
 
         apprentice: {
-
-            level: 1,
-
-            assignedBuilder: null,
-
-            availableAt: Date.now(),
-
-            enabled: false
+            level: 1, assignedBuilder: null,
+            availableAt: Date.now(), enabled: false
         },
-
-        // =========================
-        // LABORATORIO
-        // =========================
 
         laboratory: {
-
-            research: {
-
-                name: "",
-
-                finishTime: null
-            },
-
-            assistant: {
-
-                level: 1,
-
-                availableAt: Date.now(),
-
-                enabled: false
-            }
+            research: { name: "", finishTime: null },
+            assistant: { level: 1, availableAt: Date.now(), enabled: false }
         },
 
-        // =========================
-        // MASCOTAS
-        // =========================
+        pets: { name: "", finishTime: null },
 
-        pets: {
+        helpers: {
+            alchemist: { level: 1, availableAt: Date.now(), active: false },
+            digger:    { availableAt: Date.now(), active: false }
+        },
 
+        goblinBuilder: {
+            building: "",
+            finishTime: null
+        },
+
+        goblinLab: {
             name: "",
-
             finishTime: null
         }
     };
 
     for (let i = 0; i < builderCount; i++) {
-
-        account.builders.push({
-
-            building: "",
-
-            finishTime: null
-        });
+        account.builders.push({ building: "", finishTime: null });
     }
 
     accounts.push(account);
-
     saveAccounts();
     renderAccounts();
 
@@ -209,11 +148,7 @@ createAccountBtn.addEventListener("click", () => {
 // =========================
 
 function saveAccounts() {
-
-    localStorage.setItem(
-        "clashAccounts",
-        JSON.stringify(accounts)
-    );
+    localStorage.setItem("clashAccounts", JSON.stringify(accounts));
 }
 
 // =========================
@@ -221,12 +156,7 @@ function saveAccounts() {
 // =========================
 
 function deleteAccount(accountId) {
-
-    accounts =
-        accounts.filter(
-            acc => acc.id !== accountId
-        );
-
+    accounts = accounts.filter(acc => acc.id !== accountId);
     saveAccounts();
     renderAccounts();
 }
@@ -237,31 +167,13 @@ function deleteAccount(accountId) {
 
 function formatTime(ms) {
 
-    const totalSeconds =
-        Math.floor(ms / 1000);
+    const totalSeconds = Math.floor(ms / 1000);
+    const days    = Math.floor(totalSeconds / 86400);
+    const hours   = Math.floor((totalSeconds % 86400) / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
 
-    const days =
-        Math.floor(totalSeconds / 86400);
-
-    const hours =
-        Math.floor(
-            (totalSeconds % 86400) / 3600
-        );
-
-    const minutes =
-        Math.floor(
-            (totalSeconds % 3600) / 60
-        );
-
-    const seconds =
-        totalSeconds % 60;
-
-    return `
-        ${days}d
-        ${hours}h
-        ${minutes}m
-        ${seconds}s
-    `;
+    return `${days}d ${hours}h ${minutes}m ${seconds}s`;
 }
 
 // =========================
@@ -274,78 +186,61 @@ function renderAccounts() {
 
     accounts.forEach(account => {
 
-        const card =
-            document.createElement("div");
-
+        const card = document.createElement("div");
         card.className = "account-card";
 
         card.innerHTML = `
 
-        <div class="account-header">
+            <div class="account-header">
+                <div class="account-name">👑 ${account.name}</div>
+                <button
+                    class="delete-account-btn"
+                    onclick="deleteAccount(${account.id})"
+                >
+                    Eliminar Cuenta
+                </button>
+            </div>
 
-    <div class="account-name">
+            <div class="account-layout">
 
-        👑 ${account.name}
+                <div class="account-main">
 
-    </div>
+                    <div class="section-title">🔨 Constructores</div>
+                    ${renderBuilders(account)}
+                    ${renderGoblinBuilder(account)}
 
-    <button
-        class="delete-account-btn"
-        onclick="deleteAccount(${account.id})"
-    >
-        Eliminar Cuenta
-    </button>
+                    <div class="section-title lb">🧪 Investigación</div>
+                    <div class="laboratory-grid">
+                        ${renderLaboratory(account)}
+                        ${renderGoblinLab(account)}
+                    </div>
 
-</div>
+                    <div class="section-title lb">🐾 Mascotas</div>
+                    <div class="pets-grid">
+                        ${renderPets(account)}
+                    </div>
 
-<div class="account-layout">
+                </div>
 
-    <div class="account-main">
+                <div class="assistants-panel">
 
-        <div class="section-title">
-            🔨 Constructores
-        </div>
+                    <div class="assistants-title">Ayudantes</div>
 
-        ${renderBuilders(account)}
+                    ${renderApprentice(account)}
 
-        <div class="section-title lb">
-            🧪 Investigación
-        </div>
+                    <div class="assistants-divider"></div>
 
-        <div class="laboratory-grid">
+                    ${renderLabAssistant(account)}
 
-            ${renderLaboratory(account)}
+                    <div class="assistants-divider"></div>
 
-        </div>
+                    ${renderAlchemist(account)}
+                    ${renderDigger(account)}
 
-        <div class="section-title lb">
-            🐾 Mascotas
-        </div>
+                </div>
 
-        <div class="pets-grid">
-
-            ${renderPets(account)}
-
-        </div>
-
-    </div>
-
-    <div class="assistants-panel">
-
-        <div class="assistants-title">
-
-            Ayudantes
-
-        </div>
-
-        ${renderApprentice(account)}
-
-        ${renderLabAssistant(account)}
-
-    </div>
-
-</div>
-`;
+            </div>
+        `;
 
         accountsContainer.appendChild(card);
     });
@@ -356,12 +251,12 @@ function renderAccounts() {
 // =========================
 
 function updateAllTimers() {
-
     updateBuilderTimers();
-
     updateLaboratoryTimers();
-
     updatePetsTimers();
+    updateHelperTimers();
+    updateGoblinBuilderTimers();
+    updateGoblinLabTimers();
 }
 
 setInterval(updateAllTimers, 1000);

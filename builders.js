@@ -110,12 +110,21 @@ document
                 acc => acc.id === currentAccountId
             );
 
-        account.builders[currentBuilderIndex] = {
+        // Guardar en goblinBuilder si corresponde
+        if (currentBuilderIndex === "goblin") {
 
-            building,
+            account.goblinBuilder = {
+                building,
+                finishTime: Date.now() + totalMs
+            };
 
-            finishTime: Date.now() + totalMs
-        };
+        } else {
+
+            account.builders[currentBuilderIndex] = {
+                building,
+                finishTime: Date.now() + totalMs
+            };
+        }
 
         saveAccounts();
         renderAccounts();
@@ -258,18 +267,18 @@ function renderBuilders(account) {
                         ${builder.building || "Sin construcción"}
                     </div>
 
-                    ${
-                        apprenticeAssigned
-                        ? `<div class="apprentice-badge">Aprendiz</div>`
-                        : `<div></div>`
-                    }
-
                     <div
                         class="compact-timer"
                         id="timer-${account.id}-${index}"
                     >
                         ${timeText}
                     </div>
+
+                    ${
+                        apprenticeAssigned
+                        ? `<div class="apprentice-badge">Aprendiz</div>`
+                        : `<div></div>`
+                    }
 
                     
 
@@ -528,6 +537,171 @@ function updateBuilderTimers() {
 
                 saveAccounts();
             }
+        }
+    });
+}
+// =========================
+// GOBLIN BUILDER — abre modal estándar de builder
+// =========================
+
+function openGoblinBuilderMenu(accountId) {
+
+    currentAccountId = accountId;
+    currentBuilderIndex = "goblin"; // clave especial
+
+    document
+        .getElementById("modalBuilding").value = "";
+    document.getElementById("modalDays").value = "";
+    document.getElementById("modalHours").value = "";
+    document.getElementById("modalMinutes").value = "";
+
+    // Pre-llenar si ya tiene tarea
+    const account = accounts.find(acc => acc.id === accountId);
+    const gb = account.goblinBuilder;
+
+    if (gb.building) {
+        document.getElementById("modalBuilding").value = gb.building;
+    }
+
+    document
+        .getElementById("builderModal")
+        .classList.remove("hidden");
+}
+
+// =========================
+// RENDER GOBLIN BUILDER (fila verde en constructores)
+// =========================
+
+function renderGoblinBuilder(account) {
+
+    // Solo mostrar si tiene 5 o 6 builders
+    if (account.builders.length < 5) return "";
+
+    const gb = account.goblinBuilder;
+
+    let statusClass = "builder-free";
+    let timeText = "Libre";
+
+    if (gb.finishTime) {
+
+        const remaining = gb.finishTime - Date.now();
+
+        if (remaining > 0) {
+            statusClass = "builder-busy";
+            timeText = formatTime(remaining);
+        } else {
+            statusClass = "builder-finished";
+            timeText = "Finalizado";
+        }
+    }
+
+    const apprenticeAssigned =
+        account.apprentice &&
+        account.apprentice.assignedBuilder === "goblin";
+
+    return `
+        <div class="compact-row goblin-row ${apprenticeAssigned ? 'has-apprentice' : ''}">
+
+            <div class="compact-info">
+
+                <div class="compact-title">
+                    👺 Duende
+                </div>
+
+                <div
+                    class="compact-name ${statusClass}"
+                    id="status-goblin-${account.id}"
+                >
+                    ${gb.building || "Sin construcción"}
+                </div>
+
+                <div
+                    class="compact-timer"
+                    id="timer-goblin-${account.id}"
+                >
+                    ${timeText}
+                </div>
+
+                ${
+                    apprenticeAssigned
+                    ? `<div class="apprentice-badge">Aprendiz</div>`
+                    : `<div></div>`
+                }
+
+            </div>
+
+            <div class="compact-actions">
+
+                <button
+                    class="start-btn"
+                    onclick="openGoblinBuilderMenu(${account.id})"
+                >
+                    Configurar
+                </button>
+
+                <button
+                    class="clear-btn"
+                    onclick="clearGoblinBuilder(${account.id})"
+                >
+                    Limpiar
+                </button>
+
+            </div>
+
+        </div>
+    `;
+}
+
+// =========================
+// CLEAR GOBLIN BUILDER
+// =========================
+
+function clearGoblinBuilder(accountId) {
+
+    const account =
+        accounts.find(acc => acc.id === accountId);
+
+    account.goblinBuilder = {
+        building: "",
+        finishTime: null
+    };
+
+    saveAccounts();
+    renderAccounts();
+}
+
+// =========================
+// UPDATE GOBLIN BUILDER TIMER
+// =========================
+
+function updateGoblinBuilderTimers() {
+
+    accounts.forEach(account => {
+
+        const gb = account.goblinBuilder;
+
+        const timerEl = document.getElementById(
+            `timer-goblin-${account.id}`
+        );
+        const statusEl = document.getElementById(
+            `status-goblin-${account.id}`
+        );
+
+        if (!timerEl) return;
+
+        if (!gb.finishTime) {
+            timerEl.textContent = "Libre";
+            return;
+        }
+
+        const remaining = gb.finishTime - Date.now();
+
+        if (remaining > 0) {
+            timerEl.textContent = formatTime(remaining);
+            if (statusEl) statusEl.className = "compact-name builder-busy";
+        } else {
+            timerEl.textContent = "Finalizado";
+            if (statusEl) statusEl.className = "compact-name builder-finished";
         }
     });
 }

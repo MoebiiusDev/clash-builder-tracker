@@ -253,7 +253,7 @@ button:hover {
 
 .compact-info {
     display: grid;
-    grid-template-columns: 42px 1fr 160px auto;
+    grid-template-columns: 42px 1fr 160px 90px;
     align-items: center;
     gap: 14px;
     flex: 1;
@@ -332,6 +332,37 @@ button:hover {
 
 .apprentice-badge::before {
     content: '👷';
+    font-size: 13px;
+}
+
+/* Fila con asistente de laboratorio asignado */
+.compact-row.has-assistant {
+    border-color: #183a4a;
+    background: #0e1a22;
+    box-shadow: inset 0 0 0 1px rgba(80, 180, 240, 0.08);
+}
+
+.compact-row.has-assistant:hover {
+    border-color: #206080;
+}
+
+.assistant-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    background: rgba(80, 180, 240, 0.10);
+    border: 1px solid rgba(80, 180, 240, 0.25);
+    border-radius: 6px;
+    padding: 3px 8px;
+    font-size: 11px;
+    color: #50b4f0;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.assistant-badge::before {
+    content: '🧪';
     font-size: 13px;
 }
 
@@ -529,4 +560,77 @@ button:hover {
 #closePetsBtn:hover {
     background: #252530;
     color: #bbb;
+}
+/* ========================= */
+/* ACTIVATE BUTTON */
+/* ========================= */
+
+.activate-btn {
+    width: 100%;
+    padding: 7px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #4ade80, #16a34a);
+    color: #0a1a0a;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.activate-btn:hover:not(:disabled) {
+    transform: scale(1.03);
+    filter: brightness(1.1);
+}
+
+.activate-btn-disabled,
+.activate-btn:disabled {
+    background: #1e2a1e;
+    color: #4a6a4a;
+    cursor: not-allowed;
+    transform: none;
+    filter: none;
+}
+
+/* ========================= */
+/* HELPER READY GLOW */
+/* ========================= */
+
+@keyframes helper-glow {
+    0%, 100% { box-shadow: 0 0 6px 1px rgba(74, 222, 128, 0.25); }
+    50%       { box-shadow: 0 0 14px 3px rgba(74, 222, 128, 0.55); }
+}
+
+.helper-ready {
+    border-color: #16a34a !important;
+    animation: helper-glow 2s ease-in-out infinite;
+}
+
+/* ========================= */
+/* ASSISTANTS DIVIDER */
+/* ========================= */
+
+.assistants-divider {
+    width: 100%;
+    height: 1px;
+    background: #1e1e28;
+    border-radius: 999px;
+    margin: 2px 0;
+}
+
+/* ========================= */
+/* GOBLIN ROWS (verde) */
+/* ========================= */
+
+.compact-row.goblin-row {
+    background: #0e1a0e;
+    border-color: #1a3a1a;
+}
+
+.compact-row.goblin-row:hover {
+    border-color: #2d5a2d;
+}
+
+.compact-row.goblin-row .compact-title {
+    color: #4a8a4a;
 }
