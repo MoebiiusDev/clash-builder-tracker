@@ -65,6 +65,25 @@ accounts.forEach(account => {
         };
     }
 
+    // TIMER UNIFICADO DE AYUDANTES
+    if (!account.sharedHelperCooldown) {
+        account.sharedHelperCooldown = Date.now();
+    }
+
+    // keepWorking y sleepUntil en aprendiz y asistente lab
+    if (account.apprentice.keepWorking === undefined) {
+        account.apprentice.keepWorking = false;
+    }
+    if (account.apprentice.sleepUntil === undefined) {
+        account.apprentice.sleepUntil = 0;
+    }
+    if (account.laboratory.assistant.keepWorking === undefined) {
+        account.laboratory.assistant.keepWorking = false;
+    }
+    if (account.laboratory.assistant.sleepUntil === undefined) {
+        account.laboratory.assistant.sleepUntil = 0;
+    }
+
     // DUENDES — estructura simple igual que builder/lab
     if (!account.goblinBuilder) {
         account.goblinBuilder = {
@@ -106,12 +125,13 @@ createAccountBtn.addEventListener("click", () => {
 
         apprentice: {
             level: 1, assignedBuilder: null,
-            availableAt: Date.now(), enabled: false
+            availableAt: Date.now(), enabled: false,
+            keepWorking: false
         },
 
         laboratory: {
             research: { name: "", finishTime: null },
-            assistant: { level: 1, availableAt: Date.now(), enabled: false }
+            assistant: { level: 1, availableAt: Date.now(), enabled: false, keepWorking: false }
         },
 
         pets: { name: "", finishTime: null },
@@ -120,6 +140,8 @@ createAccountBtn.addEventListener("click", () => {
             alchemist: { level: 1, availableAt: Date.now(), active: false },
             digger:    { availableAt: Date.now(), active: false }
         },
+
+        sharedHelperCooldown: Date.now(),
 
         goblinBuilder: {
             building: "",
@@ -226,16 +248,17 @@ function renderAccounts() {
 
                     <div class="assistants-title">Ayudantes</div>
 
-                    ${renderApprentice(account)}
+                    <div class="assistants-grid">
 
-                    <div class="assistants-divider"></div>
+                        ${renderApprentice(account)}
+                        ${renderLabAssistant(account)}
 
-                    ${renderLabAssistant(account)}
+                        <div class="assistants-divider"></div>
 
-                    <div class="assistants-divider"></div>
+                        ${renderAlchemist(account)}
+                        ${renderDigger(account)}
 
-                    ${renderAlchemist(account)}
-                    ${renderDigger(account)}
+                    </div>
 
                 </div>
 

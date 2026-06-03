@@ -95,11 +95,17 @@ document
             (hours * 60 * 60 * 1000) +
             (minutes * 60 * 1000);
 
-        account.helpers[currentHelperType].availableAt =
-            Date.now() + totalMs;
+        let newCooldown = Date.now() + totalMs;
 
-        account.helpers[currentHelperType].active =
-            totalMs > 0;
+        // Si ya hay un timer compartido activo, usar ese
+        if (account.sharedHelperCooldown > Date.now()) {
+            newCooldown = account.sharedHelperCooldown;
+        } else if (totalMs > 0) {
+            account.sharedHelperCooldown = newCooldown;
+        }
+
+        account.helpers[currentHelperType].availableAt = newCooldown;
+        account.helpers[currentHelperType].active = totalMs > 0;
 
         if (currentHelperType === "alchemist") {
             account.helpers.alchemist.level =
@@ -144,9 +150,17 @@ function activateHelper(accountId, type, cooldownMs) {
                 const account =
                     accounts.find(acc => acc.id === accountId);
 
-                account.helpers[type].availableAt =
-                    Date.now() + cooldownMs;
+                // Usar el timer compartido si ya hay uno activo
+                let newCooldown = Date.now() + cooldownMs;
 
+                if (account.sharedHelperCooldown > Date.now()) {
+                    newCooldown = account.sharedHelperCooldown;
+                } else {
+                    // Este activa el timer compartido para todos
+                    account.sharedHelperCooldown = newCooldown;
+                }
+
+                account.helpers[type].availableAt = newCooldown;
                 account.helpers[type].active = true;
 
                 saveAccounts();

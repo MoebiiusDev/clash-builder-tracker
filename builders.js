@@ -178,11 +178,16 @@ document
                 ).value
             ) || 0;
 
-        let availableAt = Date.now();
+        const keepWorking =
+            document.getElementById(
+                "apprenticeKeepWorking"
+            ).checked;
+
+        // sleepUntil: tiempo antes de trabajar (puede ser 0 = trabajar ya)
+        let sleepUntil = Date.now();
 
         if (sleeping) {
-
-            availableAt =
+            sleepUntil =
                 Date.now() +
                 (
                     (hours * 60 * 60 * 1000) +
@@ -199,9 +204,14 @@ document
                     ? null
                     : parseInt(assignedBuilder),
 
-            availableAt,
+            sleepUntil,
 
-            enabled: true
+            // availableAt = cooldown POST-trabajo, empieza en 0
+            availableAt: Date.now(),
+
+            enabled: true,
+
+            keepWorking
         };
 
         saveAccounts();
@@ -317,19 +327,23 @@ function renderBuilders(account) {
 
 function renderApprentice(account) {
 
-    const apprentice =
-        account.apprentice;
+    const apprentice = account.apprentice;
 
-    let apprenticeStatus =
-        "⚡ Disponible";
+    let apprenticeStatus = "⚡ Disponible";
 
-    if (apprentice.availableAt > Date.now()) {
+    const now = Date.now();
 
+    if (apprentice.sleepUntil && apprentice.sleepUntil > now) {
+
+        // Está durmiendo, aún no ha trabajado
         apprenticeStatus =
-            "💤 " +
-            formatTime(
-                apprentice.availableAt - Date.now()
-            );
+            "😴 " + formatTime(apprentice.sleepUntil - now);
+
+    } else if (apprentice.availableAt > now) {
+
+        // Ya trabajó, está en cooldown de 23h
+        apprenticeStatus =
+            "💤 " + formatTime(apprentice.availableAt - now);
     }
 
     return `
@@ -472,6 +486,7 @@ function updateBuilderTimers() {
         // =========================
 
         const apprentice = account.apprentice;
+        const now = Date.now();
 
         const apprenticeTimerElement =
             document.getElementById(
@@ -480,18 +495,19 @@ function updateBuilderTimers() {
 
         if (apprenticeTimerElement) {
 
-            if (apprentice.availableAt > Date.now()) {
+            if (apprentice.sleepUntil && apprentice.sleepUntil > now) {
 
                 apprenticeTimerElement.textContent =
-                    "💤 " +
-                    formatTime(
-                        apprentice.availableAt - Date.now()
-                    );
+                    "😴 " + formatTime(apprentice.sleepUntil - now);
+
+            } else if (apprentice.availableAt > now) {
+
+                apprenticeTimerElement.textContent =
+                    "💤 " + formatTime(apprentice.availableAt - now);
 
             } else {
 
-                apprenticeTimerElement.textContent =
-                    "⚡ Disponible";
+                apprenticeTimerElement.textContent = "⚡ Disponible";
             }
         }
 
@@ -502,39 +518,46 @@ function updateBuilderTimers() {
         if (
             apprentice.enabled &&
             apprentice.assignedBuilder !== null &&
-            apprentice.availableAt <= Date.now()
+            // Disparar solo cuando sleepUntil haya pasado Y availableAt haya pasado
+            (!apprentice.sleepUntil || apprentice.sleepUntil <= now) &&
+            apprentice.availableAt <= now
         ) {
 
-            const builder =
-                account.builders[
-                apprentice.assignedBuilder
-                ];
+            const builderTarget =
+                apprentice.assignedBuilder === "goblin"
+                    ? account.goblinBuilder
+                    : account.builders[apprentice.assignedBuilder];
 
-            if (
-                builder &&
-                builder.finishTime &&
-                builder.finishTime > Date.now()
-            ) {
+            const targetActive =
+                builderTarget &&
+                builderTarget.finishTime &&
+                builderTarget.finishTime > now;
+
+            if (targetActive) {
 
                 const reductionMs =
-                    apprentice.level *
-                    60 *
-                    60 *
-                    1000;
+                    apprentice.level * 60 * 60 * 1000;
 
-                builder.finishTime -= reductionMs;
+                builderTarget.finishTime -= reductionMs;
 
-                apprentice.availableAt =
-                    Date.now() +
-                    (
-                        23 *
-                        60 *
-                        60 *
-                        1000
-                    );
+                // Cooldown post-trabajo: 23h sincronizado
+                const newCooldown = now + (23 * 60 * 60 * 1000);
 
+                account.sharedHelperCooldown = newCooldown;
+                apprentice.availableAt = newCooldown;
+                apprentice.sleepUntil = 0; // ya no duerme
+
+                if (!apprentice.keepWorking) {
+                    apprentice.enabled = false;
+                }
+
+                saveAccounts();
+
+            } else if (apprentice.keepWorking) {
+
+                // Construcción terminó
                 apprentice.enabled = false;
-
+                apprentice.keepWorking = false;
                 saveAccounts();
             }
         }
@@ -600,12 +623,12 @@ function renderGoblinBuilder(account) {
         account.apprentice.assignedBuilder === "goblin";
 
     return `
-        <div class="compact-row goblin-row ${apprenticeAssigned ? 'has-apprentice' : ''}">
+        <div class="compact-row goblin-row mar ${apprenticeAssigned ? 'has-apprentice' : ''}">
 
             <div class="compact-info">
 
                 <div class="compact-title">
-                    👺 Duende
+                    <img class="goblin-swindler" src="img/duende_estafador.png" alt="Estafador"> Duende
                 </div>
 
                 <div

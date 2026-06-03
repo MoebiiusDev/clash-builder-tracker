@@ -202,11 +202,16 @@ if (saveLabAssistantBtn) {
                     ).value
                 ) || 0;
 
-            let availableAt = Date.now();
+            const keepWorking =
+                document.getElementById(
+                    "labAssistantKeepWorking"
+                ).checked;
+
+            // sleepUntil: espera antes de trabajar
+            let sleepUntil = Date.now();
 
             if (sleeping) {
-
-                availableAt =
+                sleepUntil =
                     Date.now() +
                     (
                         (hours * 60 * 60 * 1000) +
@@ -218,9 +223,14 @@ if (saveLabAssistantBtn) {
 
                 level,
 
-                availableAt,
+                sleepUntil,
 
-                enabled: true
+                // availableAt = cooldown POST-trabajo, empieza en 0
+                availableAt: Date.now(),
+
+                enabled: true,
+
+                keepWorking
             };
 
             saveAccounts();
@@ -327,19 +337,20 @@ function renderLaboratory(account) {
 
 function renderLabAssistant(account) {
 
-    const assistant =
-        account.laboratory.assistant;
+    const assistant = account.laboratory.assistant;
+    const now = Date.now();
 
-    let assistantStatus =
-        "⚡ Disponible";
+    let assistantStatus = "⚡ Disponible";
 
-    if (assistant.availableAt > Date.now()) {
+    if (assistant.sleepUntil && assistant.sleepUntil > now) {
 
         assistantStatus =
-            "💤 " +
-            formatTime(
-                assistant.availableAt - Date.now()
-            );
+            "😴 " + formatTime(assistant.sleepUntil - now);
+
+    } else if (assistant.availableAt > now) {
+
+        assistantStatus =
+            "💤 " + formatTime(assistant.availableAt - now);
     }
 
     return `
@@ -486,22 +497,23 @@ function updateLaboratoryTimers() {
         // ASSISTANT TIMER
         // =========================
 
+        const now = Date.now();
+
         if (assistantTimer) {
 
-            if (
-                assistant.availableAt > Date.now()
-            ) {
+            if (assistant.sleepUntil && assistant.sleepUntil > now) {
 
                 assistantTimer.textContent =
-                    "💤 " +
-                    formatTime(
-                        assistant.availableAt - Date.now()
-                    );
+                    "😴 " + formatTime(assistant.sleepUntil - now);
+
+            } else if (assistant.availableAt > now) {
+
+                assistantTimer.textContent =
+                    "💤 " + formatTime(assistant.availableAt - now);
 
             } else {
 
-                assistantTimer.textContent =
-                    "⚡ Disponible";
+                assistantTimer.textContent = "⚡ Disponible";
             }
         }
 
@@ -511,31 +523,39 @@ function updateLaboratoryTimers() {
 
         if (
             assistant.enabled &&
-            assistant.availableAt <= Date.now() &&
-            research.finishTime &&
-            research.finishTime > Date.now()
+            (!assistant.sleepUntil || assistant.sleepUntil <= now) &&
+            assistant.availableAt <= now
         ) {
+            const researchActive =
+                research.finishTime &&
+                research.finishTime > now;
 
-            const reductionMs =
-                assistant.level *
-                60 *
-                60 *
-                1000;
+            if (researchActive) {
 
-            research.finishTime -= reductionMs;
+                const reductionMs =
+                    assistant.level * 60 * 60 * 1000;
 
-            assistant.availableAt =
-                Date.now() +
-                (
-                    23 *
-                    60 *
-                    60 *
-                    1000
-                );
+                research.finishTime -= reductionMs;
 
-            assistant.enabled = false;
+                // Cooldown post-trabajo sincronizado
+                const newCooldown = now + (23 * 60 * 60 * 1000);
 
-            saveAccounts();
+                account.sharedHelperCooldown = newCooldown;
+                assistant.availableAt = newCooldown;
+                assistant.sleepUntil = 0;
+
+                if (!assistant.keepWorking) {
+                    assistant.enabled = false;
+                }
+
+                saveAccounts();
+
+            } else if (assistant.keepWorking) {
+
+                assistant.enabled = false;
+                assistant.keepWorking = false;
+                saveAccounts();
+            }
         }
     });
 }
@@ -593,10 +613,10 @@ function renderGoblinLab(account) {
             <div class="compact-info">
 
                 <div class="compact-title">
-                    🧌 Duende
+                    <img class="goblin-swindler" src="img/duende_estafador.png" alt="Estafador"> Duende
                 </div>
 
-                <div class="compact-name"
+                <div class="compact-name builder-free"
                     id="status-goblin-lab-${account.id}"
                 >
                     ${gl.name || "Sin investigación"}

@@ -179,6 +179,7 @@ button:hover {
     display: flex;
     flex-direction: column;
     gap: 12px;
+    min-width: 0;
 }
 
 .assistants-title {
@@ -189,6 +190,21 @@ button:hover {
     color: #555;
     letter-spacing: 2px;
     margin-bottom: 6px;
+    grid-column: 1 / -1;
+}
+
+.assistants-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.assistants-divider {
+    grid-column: 1 / -1;
+    width: 100%;
+    height: 1px;
+    background: #1e1e28;
+    border-radius: 999px;
 }
 
 /* ========================= */
@@ -383,6 +399,7 @@ button:hover {
 .laboratory-grid {
     display: flex;
     align-items: flex-start;
+    flex-wrap: wrap;
     gap: 12px;
 }
 
@@ -633,4 +650,16 @@ button:hover {
 
 .compact-row.goblin-row .compact-title {
     color: #4a8a4a;
+    width: 180px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.mar {
+    margin-top: 10px;
+}
+
+img.goblin-swindler{
+    width: 30px;
 }
