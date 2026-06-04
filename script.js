@@ -248,6 +248,8 @@ function renderAccounts() {
 
                     <div class="assistants-title">Ayudantes</div>
 
+                    ${renderSharedTimer(account)}
+
                     <div class="assistants-grid">
 
                         ${renderApprentice(account)}
@@ -280,8 +282,152 @@ function updateAllTimers() {
     updateHelperTimers();
     updateGoblinBuilderTimers();
     updateGoblinLabTimers();
+    updateSharedTimerDisplay();
 }
 
 setInterval(updateAllTimers, 1000);
 
 renderAccounts();
+// =========================
+// SHARED TIMER RENDER
+// =========================
+
+function renderSharedTimer(account) {
+
+    const now = Date.now();
+    const remaining = account.sharedHelperCooldown - now;
+    const isActive = remaining > 0;
+
+    const timeText = isActive
+        ? formatTime(remaining)
+        : "⚡ Todos disponibles";
+
+    const color = isActive ? "#f5c842" : "#4ade80";
+
+    return `
+        <div class="shared-timer-bar">
+
+            <div class="shared-timer-label">
+                ⏱ Sincronización
+            </div>
+
+            <div
+                class="shared-timer-value"
+                id="shared-timer-${account.id}"
+                style="color: ${color}"
+            >
+                ${timeText}
+            </div>
+
+            <button
+                class="shared-timer-btn"
+                onclick="openSyncModal(${account.id})"
+            >
+                Ajustar
+            </button>
+
+        </div>
+    `;
+}
+
+// =========================
+// OPEN SYNC MODAL
+// =========================
+
+let currentSyncAccount = null;
+
+function openSyncModal(accountId) {
+
+    currentSyncAccount = accountId;
+
+    const account = accounts.find(acc => acc.id === accountId);
+    const remaining = account.sharedHelperCooldown - Date.now();
+
+    document.getElementById("syncHours").value =
+        remaining > 0 ? Math.floor(remaining / 3600000) : "";
+
+    document.getElementById("syncMinutes").value =
+        remaining > 0
+            ? Math.floor((remaining % 3600000) / 60000)
+            : "";
+
+    document
+        .getElementById("syncModal")
+        .classList.remove("hidden");
+}
+
+document
+    .getElementById("closeSyncBtn")
+    .addEventListener("click", () => {
+        document
+            .getElementById("syncModal")
+            .classList.add("hidden");
+    });
+
+document
+    .getElementById("saveSyncBtn")
+    .addEventListener("click", () => {
+
+        const account =
+            accounts.find(acc => acc.id === currentSyncAccount);
+
+        const hours =
+            parseInt(document.getElementById("syncHours").value) || 0;
+
+        const minutes =
+            parseInt(document.getElementById("syncMinutes").value) || 0;
+
+        const totalMs =
+            (hours * 60 * 60 * 1000) +
+            (minutes * 60 * 1000);
+
+        const newCooldown = Date.now() + totalMs;
+
+        // Actualizar el timer global
+        account.sharedHelperCooldown = newCooldown;
+
+        // Sincronizar TODOS los ayudantes con este nuevo tiempo
+        account.helpers.alchemist.availableAt = newCooldown;
+        account.helpers.digger.availableAt = newCooldown;
+
+        if (account.apprentice.enabled) {
+            account.apprentice.availableAt = newCooldown;
+        }
+
+        if (account.laboratory.assistant.enabled) {
+            account.laboratory.assistant.availableAt = newCooldown;
+        }
+
+        saveAccounts();
+        renderAccounts();
+
+        document
+            .getElementById("syncModal")
+            .classList.add("hidden");
+    });
+
+// =========================
+// UPDATE SHARED TIMER DISPLAY
+// =========================
+
+function updateSharedTimerDisplay() {
+
+    accounts.forEach(account => {
+
+        const el = document.getElementById(
+            `shared-timer-${account.id}`
+        );
+
+        if (!el) return;
+
+        const remaining = account.sharedHelperCooldown - Date.now();
+
+        if (remaining > 0) {
+            el.textContent = formatTime(remaining);
+            el.style.color = "#f5c842";
+        } else {
+            el.textContent = "⚡ Todos disponibles";
+            el.style.color = "#4ade80";
+        }
+    });
+}

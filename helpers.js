@@ -22,34 +22,16 @@ function configureHelper(accountId, type) {
     document.getElementById("helperModalTitle").textContent =
         titles[type] || "Ayudante";
 
-    // Mostrar nivel solo para alquimista
-    const levelRow =
-        document.getElementById("helperLevelRow");
+    // Nivel solo para alquimista
+    const levelRow = document.getElementById("helperLevelRow");
+    levelRow.style.display = type === "alchemist" ? "flex" : "none";
 
-    levelRow.style.display =
-        type === "alchemist" ? "flex" : "none";
+    const account = accounts.find(acc => acc.id === accountId);
 
-    const account =
-        accounts.find(acc => acc.id === accountId);
-
-    const helper = account.helpers[type];
-
-    // Pre-llenar nivel si es alquimista
     if (type === "alchemist") {
         document.getElementById("helperLevel").value =
-            helper.level || 1;
+            account.helpers.alchemist.level || 1;
     }
-
-    // Pre-llenar cooldown si está activo
-    const remaining = helper.availableAt - Date.now();
-
-    document.getElementById("helperCooldownHours").value =
-        remaining > 0 ? Math.floor(remaining / 3600000) : "";
-
-    document.getElementById("helperCooldownMinutes").value =
-        remaining > 0
-            ? Math.floor((remaining % 3600000) / 60000)
-            : "";
 
     document
         .getElementById("helperModal")
@@ -77,36 +59,9 @@ document
     .addEventListener("click", () => {
 
         const account =
-            accounts.find(
-                acc => acc.id === currentHelperAccount
-            );
+            accounts.find(acc => acc.id === currentHelperAccount);
 
-        const hours =
-            parseInt(
-                document.getElementById("helperCooldownHours").value
-            ) || 0;
-
-        const minutes =
-            parseInt(
-                document.getElementById("helperCooldownMinutes").value
-            ) || 0;
-
-        const totalMs =
-            (hours * 60 * 60 * 1000) +
-            (minutes * 60 * 1000);
-
-        let newCooldown = Date.now() + totalMs;
-
-        // Si ya hay un timer compartido activo, usar ese
-        if (account.sharedHelperCooldown > Date.now()) {
-            newCooldown = account.sharedHelperCooldown;
-        } else if (totalMs > 0) {
-            account.sharedHelperCooldown = newCooldown;
-        }
-
-        account.helpers[currentHelperType].availableAt = newCooldown;
-        account.helpers[currentHelperType].active = totalMs > 0;
-
+        // Solo guardar nivel si es alquimista
         if (currentHelperType === "alchemist") {
             account.helpers.alchemist.level =
                 parseInt(
@@ -126,12 +81,11 @@ document
 // ACTIVATE HELPER (botón activar con delay 3s)
 // =========================
 
-function activateHelper(accountId, type, cooldownMs) {
+function activateHelper(accountId, type) {
 
-    const btn =
-        document.getElementById(
-            `activate-${type}-${accountId}`
-        );
+    const btn = document.getElementById(
+        `activate-${type}-${accountId}`
+    );
 
     if (btn) {
         btn.disabled = true;
@@ -150,13 +104,15 @@ function activateHelper(accountId, type, cooldownMs) {
                 const account =
                     accounts.find(acc => acc.id === accountId);
 
-                // Usar el timer compartido si ya hay uno activo
-                let newCooldown = Date.now() + cooldownMs;
+                const now = Date.now();
 
-                if (account.sharedHelperCooldown > Date.now()) {
-                    newCooldown = account.sharedHelperCooldown;
-                } else {
-                    // Este activa el timer compartido para todos
+                // Usar el timer compartido si ya hay uno activo
+                const newCooldown = account.sharedHelperCooldown > now
+                    ? account.sharedHelperCooldown
+                    : now + (23 * 60 * 60 * 1000);
+
+                // Si no había timer activo, este lo establece
+                if (account.sharedHelperCooldown <= now) {
                     account.sharedHelperCooldown = newCooldown;
                 }
 
@@ -205,13 +161,13 @@ function renderAlchemist(account) {
         statusColor = "#f5c842";
     }
 
-    // Cooldown por defecto: 24h (puede variar con nivel)
-    const cooldownMs = 24 * 60 * 60 * 1000;
-
+    // Cooldown gestionado por el timer global
     return `
         <div class="mini-special-card ${isAvailable && helper.active ? 'helper-ready' : ''}">
 
-            <div class="mini-special-icon">⚗️</div>
+            <div class="mini-special-icon">
+            <img class="icon-asistente" src="img/alquimista.png" alt="">
+            </div>
 
             <div class="mini-special-title">Alquimista</div>
 
@@ -232,7 +188,7 @@ function renderAlchemist(account) {
                 <button
                     class="activate-btn ${isActive ? 'activate-btn-disabled' : ''}"
                     id="activate-alchemist-${account.id}"
-                    onclick="activateHelper(${account.id}, 'alchemist', ${cooldownMs})"
+                    onclick="activateHelper(${account.id}, 'alchemist')"
                     ${isActive ? 'disabled' : ''}
                 >
                     ${isActive ? 'Activa' : 'Activar'}
@@ -277,12 +233,12 @@ function renderDigger(account) {
         statusColor = "#f5c842";
     }
 
-    const cooldownMs = 24 * 60 * 60 * 1000;
-
     return `
         <div class="mini-special-card ${isAvailable && helper.active ? 'helper-ready' : ''}">
 
-            <div class="mini-special-icon">⛏️</div>
+            <div class="mini-special-icon">
+            <img class="icon-asistente" src="img/picador.png" alt="">
+            </div>
 
             <div class="mini-special-title">Picador</div>
 
@@ -298,7 +254,7 @@ function renderDigger(account) {
                 <button
                     class="activate-btn ${isActive ? 'activate-btn-disabled' : ''}"
                     id="activate-digger-${account.id}"
-                    onclick="activateHelper(${account.id}, 'digger', ${cooldownMs})"
+                    onclick="activateHelper(${account.id}, 'digger')"
                     ${isActive ? 'disabled' : ''}
                 >
                     ${isActive ? 'Activa' : 'Activar'}

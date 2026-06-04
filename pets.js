@@ -147,7 +147,7 @@ function renderPets(account) {
 
     return `
 
-        <div class="compact-row">
+        <div class="compact-row has-pets">
 
             <div class="compact-info">
 

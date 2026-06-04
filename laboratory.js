@@ -183,54 +183,58 @@ if (saveLabAssistantBtn) {
                     ).value
                 );
 
-            const sleeping =
-                document.getElementById(
-                    "labAssistantSleeping"
-                ).checked;
+            // const sleeping =
+            //     document.getElementById(
+            //         "labAssistantSleeping"
+            //     ).checked;
 
-            const hours =
-                parseInt(
-                    document.getElementById(
-                        "labAssistantCooldownHours"
-                    ).value
-                ) || 0;
+            // const hours =
+            //     parseInt(
+            //         document.getElementById(
+            //             "labAssistantCooldownHours"
+            //         ).value
+            //     ) || 0;
 
-            const minutes =
-                parseInt(
-                    document.getElementById(
-                        "labAssistantCooldownMinutes"
-                    ).value
-                ) || 0;
+            // const minutes =
+            //     parseInt(
+            //         document.getElementById(
+            //             "labAssistantCooldownMinutes"
+            //         ).value
+            //     ) || 0;
 
             const keepWorking =
                 document.getElementById(
                     "labAssistantKeepWorking"
                 ).checked;
 
-            // sleepUntil: espera antes de trabajar
-            let sleepUntil = Date.now();
+            const firstDone =
+                document.getElementById(
+                    "labAssistantFirstDone"
+                ).checked;
 
-            if (sleeping) {
-                sleepUntil =
-                    Date.now() +
-                    (
-                        (hours * 60 * 60 * 1000) +
-                        (minutes * 60 * 1000)
-                    );
+            const now = Date.now();
+
+            let availableAt = now; // listo para trabajar ya
+
+            if (firstDone) {
+                availableAt = account.sharedHelperCooldown > now
+                    ? account.sharedHelperCooldown
+                    : now;
             }
 
             account.laboratory.assistant = {
 
                 level,
 
-                sleepUntil,
+                sleepUntil: 0,
 
-                // availableAt = cooldown POST-trabajo, empieza en 0
-                availableAt: Date.now(),
+                availableAt,
 
                 enabled: true,
 
-                keepWorking
+                keepWorking,
+
+                firstDone
             };
 
             saveAccounts();
@@ -342,13 +346,7 @@ function renderLabAssistant(account) {
 
     let assistantStatus = "⚡ Disponible";
 
-    if (assistant.sleepUntil && assistant.sleepUntil > now) {
-
-        assistantStatus =
-            "😴 " + formatTime(assistant.sleepUntil - now);
-
-    } else if (assistant.availableAt > now) {
-
+    if (assistant.availableAt > now) {
         assistantStatus =
             "💤 " + formatTime(assistant.availableAt - now);
     }
@@ -358,7 +356,7 @@ function renderLabAssistant(account) {
         <div class="mini-special-card">
 
             <div class="mini-special-icon">
-                🧪
+                                <img class="icon-asistente" src="img/asistente-lab.png" alt="">
             </div>
 
             <div class="mini-special-title">
@@ -501,12 +499,7 @@ function updateLaboratoryTimers() {
 
         if (assistantTimer) {
 
-            if (assistant.sleepUntil && assistant.sleepUntil > now) {
-
-                assistantTimer.textContent =
-                    "😴 " + formatTime(assistant.sleepUntil - now);
-
-            } else if (assistant.availableAt > now) {
+            if (assistant.availableAt > now) {
 
                 assistantTimer.textContent =
                     "💤 " + formatTime(assistant.availableAt - now);
@@ -523,7 +516,6 @@ function updateLaboratoryTimers() {
 
         if (
             assistant.enabled &&
-            (!assistant.sleepUntil || assistant.sleepUntil <= now) &&
             assistant.availableAt <= now
         ) {
             const researchActive =
@@ -537,12 +529,14 @@ function updateLaboratoryTimers() {
 
                 research.finishTime -= reductionMs;
 
-                // Cooldown post-trabajo sincronizado
-                const newCooldown = now + (23 * 60 * 60 * 1000);
+                // Post-trabajo: sincronizar con timer global
+                const newCooldown = account.sharedHelperCooldown > now
+                    ? account.sharedHelperCooldown
+                    : now + (23 * 60 * 60 * 1000);
 
                 account.sharedHelperCooldown = newCooldown;
                 assistant.availableAt = newCooldown;
-                assistant.sleepUntil = 0;
+                assistant.firstDone = true;
 
                 if (!assistant.keepWorking) {
                     assistant.enabled = false;

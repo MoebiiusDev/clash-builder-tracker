@@ -159,40 +159,46 @@ document
                 "apprenticeBuilder"
             ).value;
 
-        const sleeping =
-            document.getElementById(
-                "apprenticeSleeping"
-            ).checked;
+        // const sleeping =
+        //     document.getElementById(
+        //         "apprenticeSleeping"
+        //     ).checked;
 
-        const hours =
-            parseInt(
-                document.getElementById(
-                    "apprenticeCooldownHours"
-                ).value
-            ) || 0;
+        // const hours =
+        //     parseInt(
+        //         document.getElementById(
+        //             "apprenticeCooldownHours"
+        //         ).value
+        //     ) || 0;
 
-        const minutes =
-            parseInt(
-                document.getElementById(
-                    "apprenticeCooldownMinutes"
-                ).value
-            ) || 0;
+        // const minutes =
+        //     parseInt(
+        //         document.getElementById(
+        //             "apprenticeCooldownMinutes"
+        //         ).value
+        //     ) || 0;
 
         const keepWorking =
             document.getElementById(
                 "apprenticeKeepWorking"
             ).checked;
 
-        // sleepUntil: tiempo antes de trabajar (puede ser 0 = trabajar ya)
-        let sleepUntil = Date.now();
+        const firstDone =
+            document.getElementById(
+                "apprenticeFirstDone"
+            ).checked;
 
-        if (sleeping) {
-            sleepUntil =
-                Date.now() +
-                (
-                    (hours * 60 * 60 * 1000) +
-                    (minutes * 60 * 1000)
-                );
+        const now = Date.now();
+
+        // Si ya hizo la primera reducción → espera el timer global
+        // Si NO la hizo → reducir al instante, luego entrar al timer global
+        let availableAt = now; // listo para trabajar ya
+
+        if (firstDone) {
+            // Ya trabajó: esperar el timer global
+            availableAt = account.sharedHelperCooldown > now
+                ? account.sharedHelperCooldown
+                : now;
         }
 
         account.apprentice = {
@@ -204,14 +210,15 @@ document
                     ? null
                     : parseInt(assignedBuilder),
 
-            sleepUntil,
+            sleepUntil: 0,
 
-            // availableAt = cooldown POST-trabajo, empieza en 0
-            availableAt: Date.now(),
+            availableAt,
 
             enabled: true,
 
-            keepWorking
+            keepWorking,
+
+            firstDone
         };
 
         saveAccounts();
@@ -284,11 +291,10 @@ function renderBuilders(account) {
                         ${timeText}
                     </div>
 
-                    ${
-                        apprenticeAssigned
-                        ? `<div class="apprentice-badge">Aprendiz</div>`
-                        : `<div></div>`
-                    }
+                    ${apprenticeAssigned
+                ? `<div class="apprentice-badge">Aprendiz</div>`
+                : `<div></div>`
+            }
 
                     
 
@@ -328,20 +334,11 @@ function renderBuilders(account) {
 function renderApprentice(account) {
 
     const apprentice = account.apprentice;
+    const now = Date.now();
 
     let apprenticeStatus = "⚡ Disponible";
 
-    const now = Date.now();
-
-    if (apprentice.sleepUntil && apprentice.sleepUntil > now) {
-
-        // Está durmiendo, aún no ha trabajado
-        apprenticeStatus =
-            "😴 " + formatTime(apprentice.sleepUntil - now);
-
-    } else if (apprentice.availableAt > now) {
-
-        // Ya trabajó, está en cooldown de 23h
+    if (apprentice.availableAt > now) {
         apprenticeStatus =
             "💤 " + formatTime(apprentice.availableAt - now);
     }
@@ -351,7 +348,7 @@ function renderApprentice(account) {
         <div class="mini-special-card">
 
             <div class="mini-special-icon">
-                👷
+                <img class="icon-asistente" src="img/constructor-aprendiz.png" alt="">
             </div>
 
             <div class="mini-special-title">
@@ -495,12 +492,7 @@ function updateBuilderTimers() {
 
         if (apprenticeTimerElement) {
 
-            if (apprentice.sleepUntil && apprentice.sleepUntil > now) {
-
-                apprenticeTimerElement.textContent =
-                    "😴 " + formatTime(apprentice.sleepUntil - now);
-
-            } else if (apprentice.availableAt > now) {
+            if (apprentice.availableAt > now) {
 
                 apprenticeTimerElement.textContent =
                     "💤 " + formatTime(apprentice.availableAt - now);
@@ -518,8 +510,6 @@ function updateBuilderTimers() {
         if (
             apprentice.enabled &&
             apprentice.assignedBuilder !== null &&
-            // Disparar solo cuando sleepUntil haya pasado Y availableAt haya pasado
-            (!apprentice.sleepUntil || apprentice.sleepUntil <= now) &&
             apprentice.availableAt <= now
         ) {
 
@@ -540,12 +530,14 @@ function updateBuilderTimers() {
 
                 builderTarget.finishTime -= reductionMs;
 
-                // Cooldown post-trabajo: 23h sincronizado
-                const newCooldown = now + (23 * 60 * 60 * 1000);
+                // Post-trabajo: sincronizar con timer global
+                const newCooldown = account.sharedHelperCooldown > now
+                    ? account.sharedHelperCooldown
+                    : now + (23 * 60 * 60 * 1000);
 
                 account.sharedHelperCooldown = newCooldown;
                 apprentice.availableAt = newCooldown;
-                apprentice.sleepUntil = 0; // ya no duerme
+                apprentice.firstDone = true;
 
                 if (!apprentice.keepWorking) {
                     apprentice.enabled = false;
@@ -555,7 +547,6 @@ function updateBuilderTimers() {
 
             } else if (apprentice.keepWorking) {
 
-                // Construcción terminó
                 apprentice.enabled = false;
                 apprentice.keepWorking = false;
                 saveAccounts();
@@ -645,11 +636,10 @@ function renderGoblinBuilder(account) {
                     ${timeText}
                 </div>
 
-                ${
-                    apprenticeAssigned
-                    ? `<div class="apprentice-badge">Aprendiz</div>`
-                    : `<div></div>`
-                }
+                ${apprenticeAssigned
+            ? `<div class="apprentice-badge">Aprendiz</div>`
+            : `<div></div>`
+        }
 
             </div>
 

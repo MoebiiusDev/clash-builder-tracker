@@ -65,7 +65,6 @@
             <h2>Constructor Aprendiz</h2>
 
             <select id="apprenticeLevel">
-
                 <option value="1">Nivel 1</option>
                 <option value="2">Nivel 2</option>
                 <option value="3">Nivel 3</option>
@@ -74,24 +73,16 @@
                 <option value="6">Nivel 6</option>
                 <option value="7">Nivel 7</option>
                 <option value="8">Nivel 8</option>
-
             </select>
 
             <select id="apprenticeBuilder">
-
                 <option value="">Sin asignar</option>
-
             </select>
 
             <label>
-                <input type="checkbox" id="apprenticeSleeping">
-
-                Está durmiendo
+                <input type="checkbox" id="apprenticeFirstDone">
+                Ya hizo su primera reducción
             </label>
-
-            <input type="number" id="apprenticeCooldownHours" placeholder="Horas restantes">
-
-            <input type="number" id="apprenticeCooldownMinutes" placeholder="Minutos restantes">
 
             <label>
                 <input type="checkbox" id="apprenticeKeepWorking">
@@ -140,10 +131,6 @@
 
     </div>
 
-    <!-- ========================= -->
-    <!-- LAB ASSISTANT MODAL -->
-    <!-- ========================= -->
-
     <div id="labAssistantModal" class="modal hidden">
 
         <div class="modal-content">
@@ -151,7 +138,6 @@
             <h2>👨‍🔬 Asistente de Laboratorio</h2>
 
             <select id="labAssistantLevel">
-
                 <option value="1">Nivel 1</option>
                 <option value="2">Nivel 2</option>
                 <option value="3">Nivel 3</option>
@@ -160,20 +146,12 @@
                 <option value="6">Nivel 6</option>
                 <option value="7">Nivel 7</option>
                 <option value="8">Nivel 8</option>
-
             </select>
 
             <label>
-
-                <input type="checkbox" id="labAssistantSleeping">
-
-                Está durmiendo
-
+                <input type="checkbox" id="labAssistantFirstDone">
+                Ya hizo su primera reducción
             </label>
-
-            <input type="number" id="labAssistantCooldownHours" placeholder="Horas restantes">
-
-            <input type="number" id="labAssistantCooldownMinutes" placeholder="Minutos restantes">
 
             <label>
                 <input type="checkbox" id="labAssistantKeepWorking">
@@ -239,7 +217,29 @@
 </div>
 
     <!-- ========================= -->
-    <!-- HELPER MODAL (Alquimista / Picador) -->
+    <!-- SYNC MODAL -->
+    <!-- ========================= -->
+
+    <div id="syncModal" class="modal hidden">
+        <div class="modal-content">
+
+            <h2>⏱ Sincronización Global</h2>
+
+            <p style="font-size:13px; color:#888; text-align:center; line-height:1.5;">
+                Tiempo restante hasta que todos<br>los ayudantes estén disponibles
+            </p>
+
+            <input type="number" id="syncHours" placeholder="Horas">
+            <input type="number" id="syncMinutes" placeholder="Minutos">
+
+            <button id="saveSyncBtn">Guardar</button>
+            <button id="closeSyncBtn">Cancelar</button>
+
+        </div>
+    </div>
+
+    <!-- ========================= -->
+    <!-- HELPER MODAL (solo nivel para alquimista) -->
     <!-- ========================= -->
 
     <div id="helperModal" class="modal hidden">
@@ -248,7 +248,7 @@
             <h2 id="helperModalTitle">Ayudante</h2>
 
             <div id="helperLevelRow" style="display:none; flex-direction:column; gap:8px;">
-                <label style="font-size:13px; color:#aaa;">Nivel</label>
+                <label style="font-size:13px; color:#aaa;">Nivel de la Alquimista</label>
                 <select id="helperLevel">
                     <option value="1">Nivel 1</option>
                     <option value="2">Nivel 2</option>
@@ -257,10 +257,6 @@
                     <option value="5">Nivel 5</option>
                 </select>
             </div>
-
-            <label style="font-size:13px; color:#aaa;">Tiempo restante del cooldown</label>
-            <input type="number" id="helperCooldownHours" placeholder="Horas">
-            <input type="number" id="helperCooldownMinutes" placeholder="Minutos">
 
             <button id="saveHelperBtn">Guardar</button>
             <button id="closeHelperBtn">Cancelar</button>
