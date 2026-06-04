@@ -229,7 +229,6 @@ function renderAccounts() {
 
                     <div class="section-title">🔨 Constructores</div>
                     ${renderBuilders(account)}
-                    ${renderGoblinBuilder(account)}
 
                     <div class="section-title lb">🧪 Investigación</div>
                     <div class="laboratory-grid">

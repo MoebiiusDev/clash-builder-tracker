@@ -5,6 +5,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Bagel+Fat+One&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Stick+No+Bills:wght@200..800&display=swap');
 
+@font-face {
+    font-family: Magic;
+    src: url('/fonts/Clash-Regular.otf');
+    font-display: swap;
+}
 
 * {
     margin: 0;
@@ -216,14 +221,17 @@ button:hover {
 /* ========================= */
 
 .section-title {
-    font-size: 13px;
-    font-weight: 700;
+    font-family: 'Magic', 'Audiowide', sans-serif;
+    font-weight: normal;
+    text-shadow: 1px 1px black, 1px -1px black, -1px 1px black, -1px -1px black, 0 3px black;
+    font-size: 20px;
     margin-bottom: 12px;
     padding-left: 10px;
     border-left: 3px solid #e08030;
     text-transform: uppercase;
     letter-spacing: 1px;
-    color: #aaa;
+    /* color: #ffffff; */
+    color: rgb(117 117 117);
 }
 
 .lb {
@@ -278,30 +286,34 @@ button:hover {
     gap: 14px;
     flex: 1;
     min-width: 0;
+    font-family: 'Magic', 'Audiowide', sans-serif;
+    text-shadow: 1px 1px black, 1px -1px black, -1px 1px black, -1px -1px black, 0 3px black;
+    font-weight: normal;
 }
 
 .compact-title {
-    font-size: 12px;
-    color: #555;
-    font-weight: 700;
+    font-size: 16px;
+    color: #ffaf7f;
+    /* font-weight: 700; */
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
 .compact-name {
     font-size: 14px;
-    font-weight: 600;
-    color: #d0c090;
+    /* font-weight: 600; */
+    color: #a8dbcb;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    text-shadow: 1px 1px black, 1px -1px black, -1px 1px black, -1px -1px black, 0 3px black;
     margin: 0 100px;
 }
 
 .builder-status {
     font-size: 14px;
-    font-weight: 600;
-    color: #d0c090;
+    /* font-weight: 600; */
+    color: #a8dbcb;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -323,14 +335,16 @@ button:hover {
 }
 
 .compact-timer {
-    font-family: "Stick No Bills", sans-serif;
-    font-optical-sizing: auto;
-    font-size: 25px;
+    font-family: 'Magic', 'Audiowide', sans-serif;
+    font-weight: normal;
+    font-size: 17px;
     /* font-weight: <weight>; */
     font-style: normal;
-    color: #d0c090;
+    color: #d5bfac;
     letter-spacing: 0.5px;
     white-space: nowrap;
+    text-shadow: 1px 1px black, 1px -1px black, -1px 1px black, -1px -1px black, 0 3px black;
+
 }
 
 
@@ -351,14 +365,14 @@ button:hover {
     padding: 3px 8px;
     font-size: 11px;
     color: #c8a030;
-    font-weight: 600;
+    /* font-weight: 600; */
     white-space: nowrap;
 }
 
-.apprentice-badge::before {
+/* .apprentice-badge::before {
     content: '👷';
     font-size: 13px;
-}
+} */
 
 /* Fila con asistente de laboratorio asignado */
 .compact-row.has-assistant {
@@ -392,14 +406,14 @@ button:hover {
     padding: 3px 8px;
     font-size: 11px;
     color: #50b4f0;
-    font-weight: 600;
+    /* font-weight: 600; */
     white-space: nowrap;
 }
 
-.assistant-badge::before {
+/* .assistant-badge::before {
     content: '🧪';
     font-size: 13px;
-}
+} */
 
 /* ========================= */
 /* COMPACT ACTIONS */

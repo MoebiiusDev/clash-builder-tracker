@@ -235,68 +235,108 @@ document
 
 function renderBuilders(account) {
 
-    let html = `
-        <div class="compact-section">
-    `;
+    const now = Date.now();
 
-    account.builders.forEach((builder, index) => {
+    // Construir slots unificados: builders normales + duende
+    const slots = account.builders.map((builder, index) => ({
+        type: "builder",
+        index,
+        building: builder.building,
+        finishTime: builder.finishTime
+    }));
+
+    if (account.builders.length >= 5) {
+        slots.push({
+            type: "goblin",
+            index: "goblin",
+            building: account.goblinBuilder.building,
+            finishTime: account.goblinBuilder.finishTime
+        });
+    }
+
+    // Orden: Finalizado → En progreso (menor tiempo primero) → Libre
+    const getPriority = (slot) => {
+        if (!slot.finishTime) return 3;
+        return (slot.finishTime - now) <= 0 ? 0 : 1;
+    };
+
+    slots.sort((a, b) => {
+        const pa = getPriority(a);
+        const pb = getPriority(b);
+        if (pa !== pb) return pa - pb;
+        if (pa === 1) return (a.finishTime - now) - (b.finishTime - now);
+        return 0;
+    });
+
+    let html = `<div class="compact-section">`;
+
+    slots.forEach(slot => {
 
         let statusClass = "builder-free";
         let timeText = "Libre";
 
-        if (builder.finishTime) {
-
-            const remaining =
-                builder.finishTime - Date.now();
-
+        if (slot.finishTime) {
+            const remaining = slot.finishTime - now;
             if (remaining > 0) {
-
                 statusClass = "builder-busy";
-
                 timeText = formatTime(remaining);
-
             } else {
-
                 statusClass = "builder-finished";
-
                 timeText = "Finalizado";
             }
         }
 
+        const isGoblin = slot.type === "goblin";
+
         const apprenticeAssigned =
             account.apprentice &&
-            account.apprentice.assignedBuilder === index;
+            account.apprentice.assignedBuilder === slot.index;
+
+        const rowClass = [
+            "compact-row",
+            isGoblin ? "goblin-row mar" : "",
+            apprenticeAssigned ? "has-apprentice" : ""
+        ].filter(Boolean).join(" ");
+
+        const titleContent = isGoblin
+            ? `<img class="goblin-swindler" src="img/duende_estafador.png" alt="Estafador"> Duende`
+            : `🛠️ ${slot.index + 1}`;
+
+        const configOnclick = isGoblin
+            ? `openGoblinBuilderMenu(${account.id})`
+            : `openBuilderMenu(${account.id}, ${slot.index})`;
+
+        const clearOnclick = isGoblin
+            ? `clearGoblinBuilder(${account.id})`
+            : `clearBuilder(${account.id}, ${slot.index})`;
 
         html += `
-
-            <div class="compact-row ${apprenticeAssigned ? 'has-apprentice' : ''}">
+            <div class="${rowClass}">
 
                 <div class="compact-info">
 
                     <div class="compact-title">
-                        🛠️ ${index + 1}
+                        ${titleContent}
                     </div>
 
                     <div
                         class="compact-name ${statusClass}"
-                        id="status-${account.id}-${index}"
+                        id="status-${account.id}-${slot.index}"
                     >
-                        ${builder.building || "Sin construcción"}
+                        ${slot.building || "Sin construcción"}
                     </div>
 
                     <div
                         class="compact-timer"
-                        id="timer-${account.id}-${index}"
+                        id="timer-${account.id}-${slot.index}"
                     >
                         ${timeText}
                     </div>
 
                     ${apprenticeAssigned
-                ? `<div class="apprentice-badge">Aprendiz</div>`
-                : `<div></div>`
-            }
-
-                    
+                        ? `<div class="apprentice-badge">Aprendiz</div>`
+                        : `<div></div>`
+                    }
 
                 </div>
 
@@ -304,14 +344,14 @@ function renderBuilders(account) {
 
                     <button
                         class="start-btn"
-                        onclick="openBuilderMenu(${account.id}, ${index})"
+                        onclick="${configOnclick}"
                     >
                         Configurar
                     </button>
 
                     <button
                         class="clear-btn"
-                        onclick="clearBuilder(${account.id}, ${index})"
+                        onclick="${clearOnclick}"
                     >
                         Limpiar
                     </button>
@@ -587,83 +627,10 @@ function openGoblinBuilderMenu(accountId) {
 // =========================
 
 function renderGoblinBuilder(account) {
-
-    // Solo mostrar si tiene 5 o 6 builders
-    if (account.builders.length < 5) return "";
-
-    const gb = account.goblinBuilder;
-
-    let statusClass = "builder-free";
-    let timeText = "Libre";
-
-    if (gb.finishTime) {
-
-        const remaining = gb.finishTime - Date.now();
-
-        if (remaining > 0) {
-            statusClass = "builder-busy";
-            timeText = formatTime(remaining);
-        } else {
-            statusClass = "builder-finished";
-            timeText = "Finalizado";
-        }
-    }
-
-    const apprenticeAssigned =
-        account.apprentice &&
-        account.apprentice.assignedBuilder === "goblin";
-
-    return `
-        <div class="compact-row goblin-row mar ${apprenticeAssigned ? 'has-apprentice' : ''}">
-
-            <div class="compact-info">
-
-                <div class="compact-title">
-                    <img class="goblin-swindler" src="img/duende_estafador.png" alt="Estafador"> Duende
-                </div>
-
-                <div
-                    class="compact-name ${statusClass}"
-                    id="status-goblin-${account.id}"
-                >
-                    ${gb.building || "Sin construcción"}
-                </div>
-
-                <div
-                    class="compact-timer"
-                    id="timer-goblin-${account.id}"
-                >
-                    ${timeText}
-                </div>
-
-                ${apprenticeAssigned
-            ? `<div class="apprentice-badge">Aprendiz</div>`
-            : `<div></div>`
-        }
-
-            </div>
-
-            <div class="compact-actions">
-
-                <button
-                    class="start-btn"
-                    onclick="openGoblinBuilderMenu(${account.id})"
-                >
-                    Configurar
-                </button>
-
-                <button
-                    class="clear-btn"
-                    onclick="clearGoblinBuilder(${account.id})"
-                >
-                    Limpiar
-                </button>
-
-            </div>
-
-        </div>
-    `;
+    // Integrado dentro de renderBuilders (ordenado por tiempo)
+    return "";
 }
+
 
 // =========================
 // CLEAR GOBLIN BUILDER
