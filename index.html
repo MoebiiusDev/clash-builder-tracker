@@ -264,10 +264,49 @@
         </div>
     </div>
 
+    <!-- ========================= -->
+    <!-- POTION MODAL -->
+    <!-- ========================= -->
+
+    <div id="potionModal" class="modal hidden">
+        <div class="modal-content">
+
+            <h2 id="potionModalTitle">Poción</h2>
+
+            <p
+                id="potionModalDesc"
+                style="font-size:13px; color:#888; text-align:center; line-height:1.6;"
+            ></p>
+
+            <label style="font-size:13px; color:#aaa;">Cantidad de pociones</label>
+            <input
+                type="number"
+                id="potionCount"
+                min="1"
+                max="99"
+                value="1"
+                placeholder="Cantidad"
+            >
+
+            <div
+                id="potionPreview"
+                style="text-align:center; font-size:13px; min-height:20px;"
+            ></div>
+
+            <button id="applyPotionBtn">
+                ✨ Aplicar Pociones
+            </button>
+
+            <button id="closePotionBtn">Cancelar</button>
+
+        </div>
+    </div>
+
     <script src="builders.js"></script>
     <script src="laboratory.js"></script>
     <script src="pets.js"></script>
     <script src="helpers.js"></script>
+    <script src="potions.js"></script>
     <script src="script.js"></script>
 </body>
 

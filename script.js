@@ -227,16 +227,37 @@ function renderAccounts() {
 
                 <div class="account-main">
 
-                    <div class="section-title">🔨 Constructores</div>
+                    <div class="section-title-row">
+                        <div class="section-title">🔨 Constructores</div>
+                        <button
+                            class="potion-btn"
+                            onclick="openPotionModal(${account.id}, 'builder')"
+                            title="Usar Poción de Constructor"
+                        >⚗️ Poción</button>
+                    </div>
                     ${renderBuilders(account)}
 
-                    <div class="section-title lb">🧪 Investigación</div>
+                    <div class="section-title-row lb">
+                        <div class="section-title">🧪 Investigación</div>
+                        <button
+                            class="potion-btn"
+                            onclick="openPotionModal(${account.id}, 'research')"
+                            title="Usar Poción de Investigación"
+                        >🔬 Poción</button>
+                    </div>
                     <div class="laboratory-grid">
                         ${renderLaboratory(account)}
                         ${renderGoblinLab(account)}
                     </div>
 
-                    <div class="section-title lb">🐾 Mascotas</div>
+                    <div class="section-title-row lb">
+                        <div class="section-title">🐾 Mascotas</div>
+                        <button
+                            class="potion-btn"
+                            onclick="openPotionModal(${account.id}, 'pet')"
+                            title="Usar Poción de Mascotas"
+                        >🧪 Poción</button>
+                    </div>
                     <div class="pets-grid">
                         ${renderPets(account)}
                     </div>

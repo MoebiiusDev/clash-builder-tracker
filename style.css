@@ -758,3 +758,74 @@ img.goblin-swindler {
     background: #252530;
     color: #bbb;
 }
+/* ========================= */
+/* SECTION TITLE ROW (con botón poción) */
+/* ========================= */
+
+.section-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.section-title-row .section-title {
+    margin-bottom: 0;
+}
+
+.section-title-row.lb {
+    margin-top: 18px;
+}
+
+.potion-btn {
+    background: #1a1a2e;
+    color: #a080e0;
+    border: 1px solid #3a2a5a;
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+    white-space: nowrap;
+}
+
+.potion-btn:hover {
+    background: #26204a;
+    color: #c0a0ff;
+    border-color: #6040a0;
+    transform: scale(1.03);
+}
+
+/* ========================= */
+/* POTION MODAL EXTRAS */
+/* ========================= */
+
+#applyPotionBtn {
+    background: linear-gradient(135deg, #8040d0, #5020a0);
+    color: white;
+    padding: 11px;
+    border-radius: 9px;
+    font-weight: 700;
+    font-size: 14px;
+    margin-top: 4px;
+}
+
+#applyPotionBtn:hover {
+    filter: brightness(1.15);
+    transform: scale(1.02);
+}
+
+#closePotionBtn {
+    background: #1e1e28;
+    color: #888;
+    border: 1px solid #2a2a38;
+    padding: 10px;
+    border-radius: 9px;
+    font-size: 13px;
+}
+
+#closePotionBtn:hover {
+    background: #252530;
+    color: #bbb;
+}
