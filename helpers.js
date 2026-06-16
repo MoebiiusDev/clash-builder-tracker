@@ -87,43 +87,42 @@ function activateHelper(accountId, type) {
         `activate-${type}-${accountId}`
     );
 
-    if (btn) {
-        btn.disabled = true;
-        btn.textContent = "3...";
+    if (!btn || btn.disabled) return;
 
-        let count = 2;
+    btn.disabled = true;
 
-        const countdown = setInterval(() => {
+    let count = 3;
+    btn.textContent = `${count}...`;
 
-            if (count > 0) {
-                btn.textContent = `${count}...`;
-                count--;
-            } else {
-                clearInterval(countdown);
+    const countdown = setInterval(() => {
 
-                const account =
-                    accounts.find(acc => acc.id === accountId);
+        count--;
 
-                const now = Date.now();
+        if (count > 0) {
+            btn.textContent = `${count}...`;
+        } else {
+            clearInterval(countdown);
 
-                // Usar el timer compartido si ya hay uno activo
-                const newCooldown = account.sharedHelperCooldown > now
-                    ? account.sharedHelperCooldown
-                    : now + (23 * 60 * 60 * 1000);
+            const account =
+                accounts.find(acc => acc.id === accountId);
 
-                // Si no había timer activo, este lo establece
-                if (account.sharedHelperCooldown <= now) {
-                    account.sharedHelperCooldown = newCooldown;
-                }
+            const now = Date.now();
 
-                account.helpers[type].availableAt = newCooldown;
-                account.helpers[type].active = true;
+            const newCooldown = account.sharedHelperCooldown > now
+                ? account.sharedHelperCooldown
+                : now + (23 * 60 * 60 * 1000);
 
-                saveAccounts();
-                renderAccounts();
+            if (account.sharedHelperCooldown <= now) {
+                account.sharedHelperCooldown = newCooldown;
             }
-        }, 1000);
-    }
+
+            account.helpers[type].availableAt = newCooldown;
+            account.helpers[type].active = true;
+
+            saveAccounts();
+            renderAccounts();
+        }
+    }, 1000);
 }
 
 // =========================
@@ -153,15 +152,14 @@ function renderAlchemist(account) {
     const isAvailable = remaining <= 0;
     const isActive = helper.active && !isAvailable;
 
-    let statusText = "⚡ Disponible";
+    let statusText = "Disponible";
     let statusColor = "#4ade80";
 
     if (isActive) {
-        statusText = "💤 " + formatTime(remaining);
+        statusText = formatTime(remaining);
         statusColor = "#f5c842";
     }
 
-    // Cooldown gestionado por el timer global
     return `
         <div class="mini-special-card ${isAvailable && helper.active ? 'helper-ready' : ''}">
 
@@ -225,11 +223,11 @@ function renderDigger(account) {
     const isAvailable = remaining <= 0;
     const isActive = helper.active && !isAvailable;
 
-    let statusText = "⚡ Disponible";
+    let statusText = "Disponible";
     let statusColor = "#4ade80";
 
     if (isActive) {
-        statusText = "💤 " + formatTime(remaining);
+        statusText = formatTime(remaining);
         statusColor = "#f5c842";
     }
 
@@ -258,13 +256,6 @@ function renderDigger(account) {
                     ${isActive ? 'disabled' : ''}
                 >
                     ${isActive ? 'Activa' : 'Activar'}
-                </button>
-
-                <button
-                    class="start-btn"
-                    onclick="configureHelper(${account.id}, 'digger')"
-                >
-                    Configurar
                 </button>
 
                 <button
@@ -304,14 +295,14 @@ function updateHelperTimers() {
 
             if (helper.active && remaining > 0) {
 
-                el.textContent = "💤 " + formatTime(remaining);
+                el.textContent = formatTime(remaining);
                 el.style.color = "#f5c842";
 
                 if (card) card.classList.remove("helper-ready");
 
             } else if (helper.active) {
 
-                el.textContent = "⚡ Disponible";
+                el.textContent = "Disponible";
                 el.style.color = "#4ade80";
 
                 if (card) card.classList.add("helper-ready");

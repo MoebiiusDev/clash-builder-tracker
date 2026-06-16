@@ -19,8 +19,17 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;800&family=Share+Tech+Mono&display=swap');
 
+:root {
+    --mint: #9cfed5;
+    --sage: #bcd8c0;
+    --panel: #252526;
+    --panel-dark: #1a1c1b;
+    --warn: #ffd54a;
+    --finish-flash: #9cfed5;
+}
+
 body {
-    background: #0d0d0f;
+    background: #0c0f0d;
     color: #e5e5e5;
     font-family: 'Exo 2', Arial, sans-serif;
     min-height: 100vh;
@@ -36,13 +45,72 @@ body {
     margin: auto;
 }
 
-h1 {
+/* ========================= */
+/* HEADER / LOGO */
+/* ========================= */
+
+.header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    margin-bottom: 28px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #1e2420;
+}
+
+.header-title-block {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-family: 'Magic', 'Audiowide', sans-serif;
+    font-weight: normal;
+}
+
+.header-subtitle {
+    font-size: 12px;
+    color: #4a6a52;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.logo-box {
+    width: 64px;
+    height: 64px;
+    flex-shrink: 0;
+    border: 2px dashed #2e3a32;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: var(--panel-dark);
+}
+
+.logo-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scaleX(-1);
+}
+
+.logo-box span {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #4a5a4f;
     text-align: center;
-    margin-bottom: 35px;
-    font-size: 38px;
+    font-weight: 700;
+}
+
+h1 {
+    text-align: left;
+    margin-bottom: 0;
+    font-size: 34px;
     font-weight: 800;
     letter-spacing: 2px;
-    background: linear-gradient(135deg, #f5c842 0%, #e08030 60%, #c44a1a 100%);
+    background: linear-gradient(135deg, #9cfed5 0%, #5ab8e0 60%, #a0b8ff 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -56,15 +124,16 @@ h1 {
     display: flex;
     gap: 12px;
     justify-content: center;
-    margin-bottom: 35px;
+    margin-bottom: 30px;
+    margin-top: 6px;
     flex-wrap: wrap;
 }
 
 .add-account-box input,
 .add-account-box select {
-    background: #1a1a1e;
+    background: var(--panel-dark);
     color: #e5e5e5;
-    border: 1px solid #2e2e38;
+    border: 1px solid #2a352e;
     padding: 12px 14px;
     border-radius: 10px;
     font-size: 15px;
@@ -75,7 +144,7 @@ h1 {
 
 .add-account-box input:focus,
 .add-account-box select:focus {
-    border-color: #e08030;
+    border-color: var(--mint);
 }
 
 /* ========================= */
@@ -94,8 +163,8 @@ button:hover {
 }
 
 #createAccountBtn {
-    background: linear-gradient(135deg, #e08030, #c44a1a);
-    color: white;
+    background: linear-gradient(135deg, var(--mint), var(--sage));
+    color: #0c1a14;
     padding: 12px 20px;
     border-radius: 10px;
     font-weight: 700;
@@ -103,8 +172,8 @@ button:hover {
 }
 
 .start-btn {
-    background: linear-gradient(135deg, #e08030, #c44a1a);
-    color: white;
+    background: linear-gradient(135deg, var(--mint), var(--sage));
+    color: #0c1a14;
     padding: 6px 12px;
     border-radius: 8px;
     font-size: 12px;
@@ -112,7 +181,7 @@ button:hover {
 }
 
 .clear-btn {
-    background: #252530;
+    background: var(--panel);
     color: #aaa;
     padding: 6px 12px;
     border-radius: 8px;
@@ -121,7 +190,7 @@ button:hover {
 }
 
 .clear-btn:hover {
-    background: #32323f;
+    background: #32332f;
     color: #ccc;
 }
 
@@ -130,8 +199,8 @@ button:hover {
 /* ========================= */
 
 .account-card {
-    background: #111114;
-    border: 1px solid #202028;
+    background: #121412;
+    border: 1px solid #1e221f;
     border-radius: 18px;
     padding: 22px;
     margin-bottom: 28px;
@@ -146,7 +215,7 @@ button:hover {
 }
 
 .account-name {
-    color: #f5c842;
+    color: #ffffff;
     font-size: 22px;
     font-weight: 800;
     letter-spacing: 0.5px;
@@ -166,6 +235,29 @@ button:hover {
 .delete-account-btn:hover {
     background: #3d1f1f;
     color: #ff6666;
+    transform: scale(1.03);
+}
+
+/* ========================= */
+/* CLEANUP ALL BUTTON */
+/* ========================= */
+
+.cleanup-account-btn {
+    background: #16201a;
+    color: var(--mint);
+    border: 1px solid #2a4a3a;
+    padding: 7px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    transition: 0.2s;
+    margin-right: 8px;
+}
+
+.cleanup-account-btn:hover {
+    background: #1c2c22;
+    color: #c0fff0;
+    border-color: #3a6a52;
     transform: scale(1.03);
 }
 
@@ -196,10 +288,11 @@ button:hover {
     text-align: center;
     font-weight: 700;
     text-transform: uppercase;
-    color: #555;
+    color: #ffffff;
     letter-spacing: 2px;
     margin-bottom: 6px;
     grid-column: 1 / -1;
+    opacity: 0.85;
 }
 
 .assistants-grid {
@@ -212,7 +305,7 @@ button:hover {
     grid-column: 1 / -1;
     width: 100%;
     height: 1px;
-    background: #1e1e28;
+    background: #1e2420;
     border-radius: 999px;
 }
 
@@ -227,11 +320,10 @@ button:hover {
     font-size: 20px;
     margin-bottom: 12px;
     padding-left: 10px;
-    border-left: 3px solid #e08030;
+    border-left: 3px solid var(--mint);
     text-transform: uppercase;
     letter-spacing: 1px;
-    /* color: #ffffff; */
-    color: rgb(117 117 117);
+    color: #ffffff;
 }
 
 .lb {
@@ -253,21 +345,21 @@ button:hover {
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    background: #16161a;
-    border: 1px solid #242430;
+    background: var(--panel);
+    border: 1px solid #2e3530;
     border-radius: 10px;
     padding: 10px 14px;
-    transition: border-color 0.2s;
+    transition: border-color 0.2s, box-shadow 0.3s;
 }
 
 .compact-row:hover {
-    border-color: #38384a;
+    border-color: #4a5a50;
 }
 
 /* Fila con aprendiz asignado */
 .compact-row.has-apprentice {
     border-color: #4a3a18;
-    background: #18160e;
+    background: #1e1c12;
     box-shadow: inset 0 0 0 1px rgba(240, 180, 40, 0.08);
 }
 
@@ -293,27 +385,25 @@ button:hover {
 
 .compact-title {
     font-size: 16px;
-    color: #ffaf7f;
-    /* font-weight: 700; */
+    color: #ffffff;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
 .compact-name {
     font-size: 14px;
-    /* font-weight: 600; */
-    color: #a8dbcb;
+    color: var(--sage);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     text-shadow: 1px 1px black, 1px -1px black, -1px 1px black, -1px -1px black, 0 3px black;
     margin: 0 100px;
+    transition: color 0.3s;
 }
 
 .builder-status {
     font-size: 14px;
-    /* font-weight: 600; */
-    color: #a8dbcb;
+    color: var(--sage);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -321,34 +411,141 @@ button:hover {
 }
 
 .compact-name.builder-free {
-    color: #5a8a5a;
+    color: #5e7a68;
     font-style: italic;
     font-weight: 400;
 }
 
 .compact-name.builder-busy {
-    color: #d0c090;
+    color: var(--sage);
 }
 
 .compact-name.builder-finished {
-    color: #e08030;
+    color: var(--mint);
+}
+
+/* ========================= */
+/* TIMER STATE CLASSES */
+/* ========================= */
+
+/* Libre - blanco apagado */
+.compact-timer.timer-free {
+    color: #8a9a90;
+    font-style: italic;
+}
+
+/* Finalizado - rojo suave */
+.compact-timer.timer-finished {
+    color: #d46060;
+    font-style: normal;
+}
+
+/* Advertencia <1h - parpadeo blanco/rojo como CoC */
+@keyframes coc-flash {
+
+    0%,
+    49% {
+        color: #ffffff;
+    }
+
+    50%,
+    100% {
+        color: #e05050;
+    }
+}
+
+.compact-timer.timer-warning {
+    animation: coc-flash 0.8s step-end infinite;
+    font-style: normal;
+}
+
+/* ========================= */
+/* ADD BUILDER BUTTON */
+/* ========================= */
+
+.add-builder-btn {
+    width: 100%;
+    margin-top: 6px;
+    padding: 7px 14px;
+    background: #141e18;
+    border: 1px dashed #2a4a34;
+    border-radius: 8px;
+    color: #4a7a5a;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+    letter-spacing: 0.5px;
+}
+
+.add-builder-btn:hover {
+    background: #1a2820;
+    border-color: var(--mint);
+    color: var(--mint);
+    transform: none;
+}
+
+
+.compact-name.builder-finished {
+    color: var(--mint);
 }
 
 .compact-timer {
     font-family: 'Magic', 'Audiowide', sans-serif;
     font-weight: normal;
     font-size: 17px;
-    /* font-weight: <weight>; */
     font-style: normal;
-    color: #d5bfac;
+    color: var(--mint);
     letter-spacing: 0.5px;
     white-space: nowrap;
     text-shadow: 1px 1px black, 1px -1px black, -1px 1px black, -1px -1px black, 0 3px black;
-
+    transition: color 0.3s;
 }
 
+/* ========================= */
+/* ALMOST DONE / FINISHED ALERTS */
+/* ========================= */
 
+/* Cuando falta poco tiempo (ej. <1h) */
+@keyframes row-warning-pulse {
 
+    0%,
+    100% {
+        box-shadow: 0 0 0 1px rgba(255, 213, 74, 0.15);
+        border-color: #5a4a1a;
+    }
+
+    50% {
+        box-shadow: 0 0 14px 2px rgba(255, 213, 74, 0.45);
+        border-color: #ffd54a;
+    }
+}
+
+.compact-row.task-warning {
+    animation: row-warning-pulse 1.6s ease-in-out infinite;
+}
+
+.compact-row.task-warning .compact-timer,
+.compact-row.task-warning .compact-name {
+    color: var(--warn);
+}
+
+/* Cuando termina (flash único, no repetido) */
+@keyframes row-finish-flash {
+    0% {
+        box-shadow: 0 0 0 2px rgba(156, 254, 213, 0.9);
+        border-color: var(--finish-flash);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(156, 254, 213, 0);
+        border-color: #2e3530;
+    }
+}
+
+.compact-row.task-finished-flash {
+    animation: row-finish-flash 1.8s ease-out 1;
+}
 
 /* ========================= */
 /* APPRENTICE BADGE */
@@ -365,14 +562,8 @@ button:hover {
     padding: 3px 8px;
     font-size: 11px;
     color: #c8a030;
-    /* font-weight: 600; */
     white-space: nowrap;
 }
-
-/* .apprentice-badge::before {
-    content: '👷';
-    font-size: 13px;
-} */
 
 /* Fila con asistente de laboratorio asignado */
 .compact-row.has-assistant {
@@ -406,14 +597,8 @@ button:hover {
     padding: 3px 8px;
     font-size: 11px;
     color: #50b4f0;
-    /* font-weight: 600; */
     white-space: nowrap;
 }
-
-/* .assistant-badge::before {
-    content: '🧪';
-    font-size: 13px;
-} */
 
 /* ========================= */
 /* COMPACT ACTIONS */
@@ -460,8 +645,8 @@ button:hover {
 
 .mini-special-card {
     width: 190px;
-    background: #13131a;
-    border: 1px solid #242430;
+    background: var(--panel);
+    border: 1px solid #2e3530;
     border-radius: 12px;
     padding: 14px;
     display: flex;
@@ -477,20 +662,22 @@ button:hover {
 
 .icon-asistente {
     width: 70px;
-    border: 1px solid #977b2f;
+    border: 1px solid #3a4a40;
+    border-radius: 6px;
 }
 
 .mini-special-title {
     font-size: 12px;
     font-weight: 700;
     text-align: center;
-    color: #aaa;
+    color: #ffffff;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    opacity: 0.85;
 }
 
 .mini-special-level {
-    color: #f5c842;
+    color: var(--mint);
     font-weight: 700;
     font-size: 13px;
 }
@@ -498,7 +685,7 @@ button:hover {
 .mini-special-status {
     font-size: 12px;
     text-align: center;
-    color: #888;
+    color: #9bb3a4;
     font-family: 'Share Tech Mono', monospace;
 }
 
@@ -536,33 +723,33 @@ button:hover {
 }
 
 .modal-content {
-    width: 340px;
-    background: #14141a;
-    border: 1px solid #2a2a38;
-    border-radius: 16px;
-    padding: 24px;
+    width: 380px;
+    background: #14171a;
+    border: 1px solid #2a342e;
+    border-radius: 18px;
+    padding: 30px 28px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
 }
 
 .modal-content h2 {
     text-align: center;
-    margin-bottom: 8px;
-    font-size: 18px;
+    margin-bottom: 6px;
+    font-size: 20px;
     font-weight: 800;
-    color: #f5c842;
+    color: #ffffff;
     letter-spacing: 0.5px;
 }
 
 .modal-content input,
 .modal-content select {
-    background: #0e0e14;
+    background: #0e1411;
     color: #e5e5e5;
-    border: 1px solid #2a2a38;
-    border-radius: 8px;
-    padding: 10px 12px;
-    font-size: 14px;
+    border: 1px solid #2a342e;
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 15px;
     font-family: inherit;
     outline: none;
     transition: border-color 0.2s;
@@ -570,7 +757,7 @@ button:hover {
 
 .modal-content input:focus,
 .modal-content select:focus {
-    border-color: #e08030;
+    border-color: var(--mint);
 }
 
 .modal-content label {
@@ -580,41 +767,48 @@ button:hover {
     font-size: 14px;
     color: #aaa;
     cursor: pointer;
+    padding: 4px 0;
 }
 
 #saveBuilderBtn,
 #saveApprenticeBtn,
 #saveLaboratoryBtn,
 #saveLabAssistantBtn,
-#savePetsBtn {
-    background: linear-gradient(135deg, #e08030, #c44a1a);
-    color: white;
-    padding: 11px;
-    border-radius: 9px;
+#savePetsBtn,
+#saveSyncBtn,
+#saveHelperBtn {
+    background: linear-gradient(135deg, var(--mint), var(--sage));
+    color: #0c1a14;
+    padding: 13px;
+    border-radius: 10px;
     font-weight: 700;
-    font-size: 14px;
-    margin-top: 4px;
+    font-size: 15px;
+    margin-top: 6px;
 }
 
 #closeModalBtn,
 #closeApprenticeBtn,
 #closeLaboratoryBtn,
 #closeLabAssistantBtn,
-#closePetsBtn {
-    background: #1e1e28;
+#closePetsBtn,
+#closeSyncBtn,
+#closeHelperBtn {
+    background: #1c211e;
     color: #888;
-    border: 1px solid #2a2a38;
-    padding: 10px;
-    border-radius: 9px;
-    font-size: 13px;
+    border: 1px solid #2a342e;
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 14px;
 }
 
 #closeModalBtn:hover,
 #closeApprenticeBtn:hover,
 #closeLaboratoryBtn:hover,
 #closeLabAssistantBtn:hover,
-#closePetsBtn:hover {
-    background: #252530;
+#closePetsBtn:hover,
+#closeSyncBtn:hover,
+#closeHelperBtn:hover {
+    background: #232a25;
     color: #bbb;
 }
 
@@ -671,18 +865,6 @@ button:hover {
 }
 
 /* ========================= */
-/* ASSISTANTS DIVIDER */
-/* ========================= */
-
-.assistants-divider {
-    width: 100%;
-    height: 1px;
-    background: #1e1e28;
-    border-radius: 999px;
-    margin: 2px 0;
-}
-
-/* ========================= */
 /* GOBLIN ROWS (verde) */
 /* ========================= */
 
@@ -696,7 +878,7 @@ button:hover {
 }
 
 .compact-row.goblin-row .compact-title {
-    color: #4a8a4a;
+    color: var(--mint);
     width: 180px;
     display: flex;
     align-items: center;
@@ -719,8 +901,8 @@ img.goblin-swindler {
     display: flex;
     align-items: center;
     gap: 10px;
-    background: #0e0e14;
-    border: 1px solid #2a2a38;
+    background: #0e1411;
+    border: 1px solid #2a342e;
     border-radius: 10px;
     padding: 10px 14px;
     margin-bottom: 4px;
@@ -731,7 +913,7 @@ img.goblin-swindler {
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1px;
-    color: #555;
+    color: #7a9a82;
     white-space: nowrap;
 }
 
@@ -744,9 +926,9 @@ img.goblin-swindler {
 }
 
 .shared-timer-btn {
-    background: #1e1e28;
+    background: #1c211e;
     color: #888;
-    border: 1px solid #2a2a38;
+    border: 1px solid #2a342e;
     padding: 5px 10px;
     border-radius: 7px;
     font-size: 11px;
@@ -755,9 +937,10 @@ img.goblin-swindler {
 }
 
 .shared-timer-btn:hover {
-    background: #252530;
+    background: #232a25;
     color: #bbb;
 }
+
 /* ========================= */
 /* SECTION TITLE ROW (con botón poción) */
 /* ========================= */
@@ -817,15 +1000,26 @@ img.goblin-swindler {
 }
 
 #closePotionBtn {
-    background: #1e1e28;
+    background: #1c211e;
     color: #888;
-    border: 1px solid #2a2a38;
+    border: 1px solid #2a342e;
     padding: 10px;
     border-radius: 9px;
     font-size: 13px;
 }
 
 #closePotionBtn:hover {
-    background: #252530;
+    background: #232a25;
     color: #bbb;
+}
+
+/* ========================= */
+/* TINTED ICONS (emoji con acento del tema) */
+/* ========================= */
+
+.icon-tint {
+    background: linear-gradient(135deg, var(--mint), var(--sage));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }

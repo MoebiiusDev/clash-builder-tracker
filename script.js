@@ -65,9 +65,12 @@ accounts.forEach(account => {
         };
     }
 
-    // TIMER UNIFICADO DE AYUDANTES
-    if (!account.sharedHelperCooldown) {
-        account.sharedHelperCooldown = Date.now();
+    // TIMER UNIFICADO DE AYUDANTES — preservar si ya existe y es futuro
+    if (!account.sharedHelperCooldown || account.sharedHelperCooldown <= Date.now()) {
+        if (!account.sharedHelperCooldown) {
+            account.sharedHelperCooldown = Date.now();
+        }
+        // Si ya existe pero es pasado, lo dejamos como está (no resetear a Date.now())
     }
 
     // keepWorking y sleepUntil en aprendiz y asistente lab
@@ -214,13 +217,21 @@ function renderAccounts() {
         card.innerHTML = `
 
             <div class="account-header">
-                <div class="account-name">👑 ${account.name}</div>
-                <button
-                    class="delete-account-btn"
-                    onclick="deleteAccount(${account.id})"
-                >
-                    Eliminar Cuenta
-                </button>
+                <div class="account-name">${account.name}</div>
+                <div style="display:flex; gap:8px; align-items:center;">
+                    <button
+                        class="cleanup-account-btn"
+                        onclick="clearAllAccount(${account.id})"
+                    >
+                        Limpiar Todo
+                    </button>
+                    <button
+                        class="delete-account-btn"
+                        onclick="deleteAccount(${account.id})"
+                    >
+                        Eliminar Cuenta
+                    </button>
+                </div>
             </div>
 
             <div class="account-layout">
@@ -228,22 +239,22 @@ function renderAccounts() {
                 <div class="account-main">
 
                     <div class="section-title-row">
-                        <div class="section-title">🔨 Constructores</div>
+                        <div class="section-title">Constructores</div>
                         <button
                             class="potion-btn"
                             onclick="openPotionModal(${account.id}, 'builder')"
-                            title="Usar Poción de Constructor"
-                        >⚗️ Poción</button>
+                            title="Usar Pocion de Constructor"
+                        >Pocion</button>
                     </div>
                     ${renderBuilders(account)}
 
                     <div class="section-title-row lb">
-                        <div class="section-title">🧪 Investigación</div>
+                        <div class="section-title">Investigacion</div>
                         <button
                             class="potion-btn"
                             onclick="openPotionModal(${account.id}, 'research')"
-                            title="Usar Poción de Investigación"
-                        >🔬 Poción</button>
+                            title="Usar Pocion de Investigacion"
+                        >Pocion</button>
                     </div>
                     <div class="laboratory-grid">
                         ${renderLaboratory(account)}
@@ -251,12 +262,12 @@ function renderAccounts() {
                     </div>
 
                     <div class="section-title-row lb">
-                        <div class="section-title">🐾 Mascotas</div>
+                        <div class="section-title">Mascotas</div>
                         <button
                             class="potion-btn"
                             onclick="openPotionModal(${account.id}, 'pet')"
-                            title="Usar Poción de Mascotas"
-                        >🧪 Poción</button>
+                            title="Usar Pocion de Mascotas"
+                        >Pocion</button>
                     </div>
                     <div class="pets-grid">
                         ${renderPets(account)}

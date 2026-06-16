@@ -12,7 +12,14 @@
 
     <div class="container">
 
-        <h1>⚒️ Clash Builder Tracker</h1>
+        <div class="header-row">
+            <div class="header-title-block">
+                <h1>Clash Builder Tracker</h1>
+            </div>
+            <div class="logo-box">
+                <img src="img/adorado.png" alt="">
+            </div>
+        </div>
 
         <div class="add-account-box">
             <input type="text" id="playerName" placeholder="Nombre del jugador">
@@ -109,7 +116,7 @@
 
         <div class="modal-content">
 
-            <h2>🧪 Configurar Laboratorio</h2>
+            <h2>Configurar Laboratorio</h2>
 
             <input type="text" id="laboratoryName" placeholder="Nombre investigación">
 
@@ -135,7 +142,7 @@
 
         <div class="modal-content">
 
-            <h2>👨‍🔬 Asistente de Laboratorio</h2>
+            <h2>Asistente de Laboratorio</h2>
 
             <select id="labAssistantLevel">
                 <option value="1">Nivel 1</option>
@@ -171,50 +178,34 @@
     </div>
 
     <!-- ========================= -->
-<!-- PETS MODAL -->
-<!-- ========================= -->
+    <!-- PETS MODAL -->
+    <!-- ========================= -->
 
-<div id="petsModal" class="modal hidden">
+    <div id="petsModal" class="modal hidden">
 
-    <div class="modal-content">
+        <div class="modal-content">
 
-        <h2>🐾 Configurar Mascota</h2>
+            <h2>Configurar Mascota</h2>
 
-        <input
-            type="text"
-            id="petsName"
-            placeholder="Nombre mascota"
-        >
+            <input type="text" id="petsName" placeholder="Nombre mascota">
 
-        <input
-            type="number"
-            id="petsDays"
-            placeholder="Días"
-        >
+            <input type="number" id="petsDays" placeholder="Días">
 
-        <input
-            type="number"
-            id="petsHours"
-            placeholder="Horas"
-        >
+            <input type="number" id="petsHours" placeholder="Horas">
 
-        <input
-            type="number"
-            id="petsMinutes"
-            placeholder="Minutos"
-        >
+            <input type="number" id="petsMinutes" placeholder="Minutos">
 
-        <button id="savePetsBtn">
-            Guardar
-        </button>
+            <button id="savePetsBtn">
+                Guardar
+            </button>
 
-        <button id="closePetsBtn">
-            Cancelar
-        </button>
+            <button id="closePetsBtn">
+                Cancelar
+            </button>
+
+        </div>
 
     </div>
-
-</div>
 
     <!-- ========================= -->
     <!-- SYNC MODAL -->
@@ -223,7 +214,7 @@
     <div id="syncModal" class="modal hidden">
         <div class="modal-content">
 
-            <h2>⏱ Sincronización Global</h2>
+            <h2>Sincronizacion Global</h2>
 
             <p style="font-size:13px; color:#888; text-align:center; line-height:1.5;">
                 Tiempo restante hasta que todos<br>los ayudantes estén disponibles
@@ -273,25 +264,12 @@
 
             <h2 id="potionModalTitle">Poción</h2>
 
-            <p
-                id="potionModalDesc"
-                style="font-size:13px; color:#888; text-align:center; line-height:1.6;"
-            ></p>
+            <p id="potionModalDesc" style="font-size:13px; color:#888; text-align:center; line-height:1.6;"></p>
 
             <label style="font-size:13px; color:#aaa;">Cantidad de pociones</label>
-            <input
-                type="number"
-                id="potionCount"
-                min="1"
-                max="99"
-                value="1"
-                placeholder="Cantidad"
-            >
+            <input type="number" id="potionCount" min="1" max="99" value="1" placeholder="Cantidad">
 
-            <div
-                id="potionPreview"
-                style="text-align:center; font-size:13px; min-height:20px;"
-            ></div>
+            <div id="potionPreview" style="text-align:center; font-size:13px; min-height:20px;"></div>
 
             <button id="applyPotionBtn">
                 ✨ Aplicar Pociones

@@ -272,16 +272,18 @@ function renderBuilders(account) {
 
     slots.forEach(slot => {
 
-        let statusClass = "builder-free";
+        let timerClass = "compact-timer timer-free";
         let timeText = "Libre";
 
         if (slot.finishTime) {
             const remaining = slot.finishTime - now;
             if (remaining > 0) {
-                statusClass = "builder-busy";
                 timeText = formatTime(remaining);
+                timerClass = remaining < 3600000
+                    ? "compact-timer timer-warning"
+                    : "compact-timer";
             } else {
-                statusClass = "builder-finished";
+                timerClass = "compact-timer timer-finished";
                 timeText = "Finalizado";
             }
         }
@@ -300,7 +302,7 @@ function renderBuilders(account) {
 
         const titleContent = isGoblin
             ? `<img class="goblin-swindler" src="img/duende_estafador.png" alt="Estafador"> Duende`
-            : `🛠️ ${slot.index + 1}`;
+            : `${slot.index + 1}`;
 
         const configOnclick = isGoblin
             ? `openGoblinBuilderMenu(${account.id})`
@@ -320,14 +322,14 @@ function renderBuilders(account) {
                     </div>
 
                     <div
-                        class="compact-name ${statusClass}"
+                        class="compact-name"
                         id="status-${account.id}-${slot.index}"
                     >
-                        ${slot.building || "Sin construcción"}
+                        ${slot.building || "Sin construccion"}
                     </div>
 
                     <div
-                        class="compact-timer"
+                        class="${timerClass}"
                         id="timer-${account.id}-${slot.index}"
                     >
                         ${timeText}
@@ -362,6 +364,18 @@ function renderBuilders(account) {
         `;
     });
 
+    // Boton para añadir constructor (solo si tiene menos de 5 builders normales)
+    if (account.builders.length < 5) {
+        html += `
+            <button
+                class="add-builder-btn"
+                onclick="addBuilder(${account.id})"
+            >
+                + Añadir Constructor
+            </button>
+        `;
+    }
+
     html += `</div>`;
 
     return html;
@@ -376,11 +390,13 @@ function renderApprentice(account) {
     const apprentice = account.apprentice;
     const now = Date.now();
 
-    let apprenticeStatus = "⚡ Disponible";
+    let apprenticeStatus = "Disponible";
+    let apprenticeColor = "#4ade80";
 
     if (apprentice.availableAt > now) {
         apprenticeStatus =
-            "💤 " + formatTime(apprentice.availableAt - now);
+            formatTime(apprentice.availableAt - now);
+        apprenticeColor = "#f5c842";
     }
 
     return `
@@ -402,6 +418,7 @@ function renderApprentice(account) {
             <div
                 class="mini-special-status"
                 id="apprentice-timer-${account.id}"
+                style="color: ${apprenticeColor}"
             >
                 ${apprenticeStatus}
             </div>
@@ -483,17 +500,11 @@ function updateBuilderTimers() {
                     `timer-${account.id}-${index}`
                 );
 
-            const statusElement =
-                document.getElementById(
-                    `status-${account.id}-${index}`
-                );
-
-            if (!timerElement || !statusElement) return;
+            if (!timerElement) return;
 
             if (!builder.finishTime) {
-
                 timerElement.textContent = "Libre";
-
+                timerElement.className = "compact-timer timer-free";
                 return;
             }
 
@@ -501,20 +512,13 @@ function updateBuilderTimers() {
                 builder.finishTime - Date.now();
 
             if (remaining > 0) {
-
-                timerElement.textContent =
-                    formatTime(remaining);
-
-                statusElement.className =
-                    "builder-status builder-busy";
-
+                timerElement.textContent = formatTime(remaining);
+                timerElement.className = remaining < 3600000
+                    ? "compact-timer timer-warning"
+                    : "compact-timer";
             } else {
-
-                timerElement.textContent =
-                    "Finalizado";
-
-                statusElement.className =
-                    "builder-status builder-finished";
+                timerElement.textContent = "Finalizado";
+                timerElement.className = "compact-timer timer-finished";
             }
         });
 
@@ -533,13 +537,12 @@ function updateBuilderTimers() {
         if (apprenticeTimerElement) {
 
             if (apprentice.availableAt > now) {
-
                 apprenticeTimerElement.textContent =
-                    "💤 " + formatTime(apprentice.availableAt - now);
-
+                    formatTime(apprentice.availableAt - now);
+                apprenticeTimerElement.style.color = "#f5c842";
             } else {
-
-                apprenticeTimerElement.textContent = "⚡ Disponible";
+                apprenticeTimerElement.textContent = "Disponible";
+                apprenticeTimerElement.style.color = "#4ade80";
             }
         }
 
@@ -570,7 +573,6 @@ function updateBuilderTimers() {
 
                 builderTarget.finishTime -= reductionMs;
 
-                // Post-trabajo: sincronizar con timer global
                 const newCooldown = account.sharedHelperCooldown > now
                     ? account.sharedHelperCooldown
                     : now + (23 * 60 * 60 * 1000);
@@ -595,8 +597,69 @@ function updateBuilderTimers() {
     });
 }
 // =========================
-// GOBLIN BUILDER — abre modal estándar de builder
+// ADD BUILDER
 // =========================
+
+function addBuilder(accountId) {
+
+    const account =
+        accounts.find(acc => acc.id === accountId);
+
+    if (account.builders.length < 5) {
+        account.builders.push({ building: "", finishTime: null });
+        saveAccounts();
+        renderAccounts();
+    }
+}
+
+// =========================
+// CLEAR ALL (reset timers only, keep profile)
+// =========================
+
+function clearAllAccount(accountId) {
+
+    const account =
+        accounts.find(acc => acc.id === accountId);
+
+    account.builders = account.builders.map(() => ({
+        building: "",
+        finishTime: null
+    }));
+
+    account.goblinBuilder = { building: "", finishTime: null };
+    account.goblinLab = { name: "", finishTime: null };
+
+    account.laboratory.research = { name: "", finishTime: null };
+
+    account.pets = { name: "", finishTime: null };
+
+    account.apprentice = {
+        level: account.apprentice.level,
+        assignedBuilder: null,
+        availableAt: Date.now(),
+        enabled: false,
+        keepWorking: false,
+        sleepUntil: 0
+    };
+
+    account.laboratory.assistant = {
+        level: account.laboratory.assistant.level,
+        availableAt: Date.now(),
+        enabled: false,
+        keepWorking: false,
+        sleepUntil: 0
+    };
+
+    account.helpers.alchemist.availableAt = Date.now();
+    account.helpers.alchemist.active = false;
+    account.helpers.digger.availableAt = Date.now();
+    account.helpers.digger.active = false;
+
+    account.sharedHelperCooldown = Date.now();
+
+    saveAccounts();
+    renderAccounts();
+}
 
 function openGoblinBuilderMenu(accountId) {
 

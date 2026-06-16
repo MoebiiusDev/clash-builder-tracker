@@ -183,25 +183,6 @@ if (saveLabAssistantBtn) {
                     ).value
                 );
 
-            // const sleeping =
-            //     document.getElementById(
-            //         "labAssistantSleeping"
-            //     ).checked;
-
-            // const hours =
-            //     parseInt(
-            //         document.getElementById(
-            //             "labAssistantCooldownHours"
-            //         ).value
-            //     ) || 0;
-
-            // const minutes =
-            //     parseInt(
-            //         document.getElementById(
-            //             "labAssistantCooldownMinutes"
-            //         ).value
-            //     ) || 0;
-
             const keepWorking =
                 document.getElementById(
                     "labAssistantKeepWorking"
@@ -214,7 +195,7 @@ if (saveLabAssistantBtn) {
 
             const now = Date.now();
 
-            let availableAt = now; // listo para trabajar ya
+            let availableAt = now;
 
             if (firstDone) {
                 availableAt = account.sharedHelperCooldown > now
@@ -266,6 +247,7 @@ function renderLaboratory(account) {
         assistant.enabled;
 
     let status = "Libre";
+    let timerClass = "compact-timer timer-free";
 
     if (research.finishTime) {
 
@@ -273,13 +255,13 @@ function renderLaboratory(account) {
             research.finishTime - Date.now();
 
         if (remaining > 0) {
-
-            status =
-                formatTime(remaining);
-
+            status = formatTime(remaining);
+            timerClass = remaining < 3600000
+                ? "compact-timer timer-warning"
+                : "compact-timer";
         } else {
-
             status = "Finalizado";
+            timerClass = "compact-timer timer-finished";
         }
     }
 
@@ -294,11 +276,11 @@ function renderLaboratory(account) {
                 </div>
 
                 <div class="compact-name">
-                    ${research.name || "Sin investigación"}
+                    ${research.name || "Sin investigacion"}
                 </div>
 
                 <div
-                    class="compact-timer"
+                    class="${timerClass}"
                     id="lab-timer-${account.id}"
                 >
                     ${status}
@@ -344,11 +326,12 @@ function renderLabAssistant(account) {
     const assistant = account.laboratory.assistant;
     const now = Date.now();
 
-    let assistantStatus = "⚡ Disponible";
+    let assistantStatus = "Disponible";
+    let statusColor = "#4ade80";
 
     if (assistant.availableAt > now) {
-        assistantStatus =
-            "💤 " + formatTime(assistant.availableAt - now);
+        assistantStatus = formatTime(assistant.availableAt - now);
+        statusColor = "#f5c842";
     }
 
     return `
@@ -356,7 +339,7 @@ function renderLabAssistant(account) {
         <div class="mini-special-card">
 
             <div class="mini-special-icon">
-                                <img class="icon-asistente" src="img/asistente-lab.png" alt="">
+                <img class="icon-asistente" src="img/asistente-lab.png" alt="">
             </div>
 
             <div class="mini-special-title">
@@ -370,6 +353,7 @@ function renderLabAssistant(account) {
             <div
                 class="mini-special-status"
                 id="assistant-timer-${account.id}"
+                style="color: ${statusColor}"
             >
                 ${assistantStatus}
             </div>
@@ -467,57 +451,40 @@ function updateLaboratoryTimers() {
                 `assistant-timer-${account.id}`
             );
 
-        // =========================
         // LAB TIMER
-        // =========================
-
-        if (
-            timer &&
-            research.finishTime
-        ) {
+        if (timer && research.finishTime) {
 
             const remaining =
                 research.finishTime - Date.now();
 
             if (remaining > 0) {
-
-                timer.textContent =
-                    formatTime(remaining);
-
+                timer.textContent = formatTime(remaining);
+                timer.className = remaining < 3600000
+                    ? "compact-timer timer-warning"
+                    : "compact-timer";
             } else {
-
-                timer.textContent =
-                    "Finalizado";
+                timer.textContent = "Finalizado";
+                timer.className = "compact-timer timer-finished";
             }
         }
 
-        // =========================
         // ASSISTANT TIMER
-        // =========================
-
         const now = Date.now();
 
         if (assistantTimer) {
 
             if (assistant.availableAt > now) {
-
-                assistantTimer.textContent =
-                    "💤 " + formatTime(assistant.availableAt - now);
-
+                assistantTimer.textContent = formatTime(assistant.availableAt - now);
+                assistantTimer.style.color = "#f5c842";
             } else {
-
-                assistantTimer.textContent = "⚡ Disponible";
+                assistantTimer.textContent = "Disponible";
+                assistantTimer.style.color = "#4ade80";
             }
         }
 
-        // =========================
         // ASSISTANT LOGIC
-        // =========================
+        if (assistant.enabled && assistant.availableAt <= now) {
 
-        if (
-            assistant.enabled &&
-            assistant.availableAt <= now
-        ) {
             const researchActive =
                 research.finishTime &&
                 research.finishTime > now;
@@ -529,7 +496,6 @@ function updateLaboratoryTimers() {
 
                 research.finishTime -= reductionMs;
 
-                // Post-trabajo: sincronizar con timer global
                 const newCooldown = account.sharedHelperCooldown > now
                     ? account.sharedHelperCooldown
                     : now + (23 * 60 * 60 * 1000);
@@ -553,14 +519,15 @@ function updateLaboratoryTimers() {
         }
     });
 }
+
 // =========================
-// GOBLIN LAB — abre modal estándar de laboratorio
+// GOBLIN LAB
 // =========================
 
 function openGoblinLabMenu(accountId) {
 
     currentLaboratoryAccount = accountId;
-    currentLaboratoryTarget = "goblin"; // clave especial
+    currentLaboratoryTarget = "goblin";
 
     const account = accounts.find(acc => acc.id === accountId);
     const gl = account.goblinLab;
@@ -575,15 +542,12 @@ function openGoblinLabMenu(accountId) {
         .classList.remove("hidden");
 }
 
-// =========================
-// RENDER GOBLIN LAB (fila verde en investigación)
-// =========================
-
 function renderGoblinLab(account) {
 
     const gl = account.goblinLab;
 
     let status = "Libre";
+    let timerClass = "compact-timer timer-free";
 
     if (gl.finishTime) {
 
@@ -591,8 +555,12 @@ function renderGoblinLab(account) {
 
         if (remaining > 0) {
             status = formatTime(remaining);
+            timerClass = remaining < 3600000
+                ? "compact-timer timer-warning"
+                : "compact-timer";
         } else {
             status = "Finalizado";
+            timerClass = "compact-timer timer-finished";
         }
     }
 
@@ -610,14 +578,14 @@ function renderGoblinLab(account) {
                     <img class="goblin-swindler" src="img/duende_estafador.png" alt="Estafador"> Duende
                 </div>
 
-                <div class="compact-name builder-free"
+                <div class="compact-name"
                     id="status-goblin-lab-${account.id}"
                 >
-                    ${gl.name || "Sin investigación"}
+                    ${gl.name || "Sin investigacion"}
                 </div>
 
                 <div
-                    class="compact-timer"
+                    class="${timerClass}"
                     id="timer-goblin-lab-${account.id}"
                 >
                     ${status}
@@ -649,10 +617,6 @@ function renderGoblinLab(account) {
     `;
 }
 
-// =========================
-// CLEAR GOBLIN LAB
-// =========================
-
 function clearGoblinLab(accountId) {
 
     const account =
@@ -666,10 +630,6 @@ function clearGoblinLab(accountId) {
     saveAccounts();
     renderAccounts();
 }
-
-// =========================
-// UPDATE GOBLIN LAB TIMER
-// =========================
 
 function updateGoblinLabTimers() {
 
@@ -685,6 +645,7 @@ function updateGoblinLabTimers() {
 
         if (!gl.finishTime) {
             timerEl.textContent = "Libre";
+            timerEl.className = "compact-timer timer-free";
             return;
         }
 
@@ -692,8 +653,12 @@ function updateGoblinLabTimers() {
 
         if (remaining > 0) {
             timerEl.textContent = formatTime(remaining);
+            timerEl.className = remaining < 3600000
+                ? "compact-timer timer-warning"
+                : "compact-timer";
         } else {
             timerEl.textContent = "Finalizado";
+            timerEl.className = "compact-timer timer-finished";
         }
     });
 }
