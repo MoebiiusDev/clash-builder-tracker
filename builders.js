@@ -190,16 +190,11 @@ document
 
         const now = Date.now();
 
-        // Si ya hizo la primera reducción → espera el timer global
-        // Si NO la hizo → reducir al instante, luego entrar al timer global
-        let availableAt = now; // listo para trabajar ya
-
-        if (firstDone) {
-            // Ya trabajó: esperar el timer global
-            availableAt = account.sharedHelperCooldown > now
+        // availableAt SIEMPRE deriva del cooldown global guardado.
+        const availableAt =
+            account.sharedHelperCooldown > now
                 ? account.sharedHelperCooldown
                 : now;
-        }
 
         account.apprentice = {
 
@@ -396,7 +391,7 @@ function renderApprentice(account) {
     if (apprentice.availableAt > now) {
         apprenticeStatus =
             formatTime(apprentice.availableAt - now);
-        apprenticeColor = "#f5c842";
+        apprenticeColor = "#78ffa9";
     }
 
     return `
@@ -539,7 +534,7 @@ function updateBuilderTimers() {
             if (apprentice.availableAt > now) {
                 apprenticeTimerElement.textContent =
                     formatTime(apprentice.availableAt - now);
-                apprenticeTimerElement.style.color = "#f5c842";
+                apprenticeTimerElement.style.color = "#78ffa9";
             } else {
                 apprenticeTimerElement.textContent = "Disponible";
                 apprenticeTimerElement.style.color = "#4ade80";
@@ -573,12 +568,16 @@ function updateBuilderTimers() {
 
                 builderTarget.finishTime -= reductionMs;
 
-                const newCooldown = account.sharedHelperCooldown > now
-                    ? account.sharedHelperCooldown
+                const existingCooldown = account.sharedHelperCooldown;
+                const newCooldown = existingCooldown > now
+                    ? existingCooldown
                     : now + (23 * 60 * 60 * 1000);
 
-                account.sharedHelperCooldown = newCooldown;
-                apprentice.availableAt = newCooldown;
+                if (existingCooldown <= now) {
+                    account.sharedHelperCooldown = newCooldown;
+                }
+
+                apprentice.availableAt = account.sharedHelperCooldown;
                 apprentice.firstDone = true;
 
                 if (!apprentice.keepWorking) {

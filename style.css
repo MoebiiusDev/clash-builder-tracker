@@ -20,8 +20,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;800&family=Share+Tech+Mono&display=swap');
 
 :root {
-    --mint: #9cfed5;
-    --sage: #bcd8c0;
+    --mint: #f6fffb;
+    --sage: #e0ffe5;
     --panel: #252526;
     --panel-dark: #1a1c1b;
     --warn: #ffd54a;
@@ -63,8 +63,6 @@ body {
     display: flex;
     flex-direction: column;
     gap: 4px;
-    font-family: 'Magic', 'Audiowide', sans-serif;
-    font-weight: normal;
 }
 
 .header-subtitle {
@@ -76,10 +74,11 @@ body {
 }
 
 .logo-box {
-    width: 64px;
+    /* width: 64px; */
+    gap: 10px;
     height: 64px;
     flex-shrink: 0;
-    border: 2px dashed #2e3a32;
+    /* border: 2px dashed #2e3a32; */
     border-radius: 14px;
     display: flex;
     align-items: center;
@@ -93,6 +92,7 @@ body {
     height: 100%;
     object-fit: cover;
     transform: scaleX(-1);
+    border-radius: 100%;
 }
 
 .logo-box span {
@@ -262,6 +262,144 @@ button:hover {
 }
 
 /* ========================= */
+/* COLLAPSE TOGGLE BUTTON */
+/* ========================= */
+
+.collapse-account-btn {
+    background: #14181c;
+    color: #6aa8d8;
+    border: 1px solid #223040;
+    padding: 7px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.collapse-account-btn:hover {
+    background: #1a2330;
+    color: #9cd0ff;
+    border-color: #2e4a66;
+    transform: scale(1.03);
+}
+
+.account-card.account-collapsed {
+    padding-bottom: 16px;
+}
+
+/* ========================= */
+/* COLLAPSED ROW — columnas lado a lado */
+/* ========================= */
+
+.collapsed-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: flex-start;
+}
+
+.collapsed-row .account-card.account-collapsed {
+    width: 230px;
+    flex: 0 0 230px;
+    margin-bottom: 0;
+    padding: 16px;
+}
+
+.collapsed-row .account-header {
+    margin-bottom: 12px;
+}
+
+.collapsed-row .account-name {
+    font-size: 15px;
+}
+
+.collapsed-row .collapse-account-btn {
+    padding: 5px 10px;
+    font-size: 11px;
+}
+
+/* ========================= */
+/* SUMMARY VIEW (VISTA RESUMIDA) — columna vertical */
+/* ========================= */
+
+.summary-column {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.summary-section-title {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: #5a6a60;
+    font-weight: 700;
+    margin: 10px 0 5px 2px;
+}
+
+.summary-section-title:first-child {
+    margin-top: 2px;
+}
+
+.summary-section {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    background: #0f1411;
+    border: 1px solid #1e2722;
+    border-radius: 7px;
+    padding: 6px 9px;
+    font-size: 12px;
+}
+
+.summary-label {
+    color: #7a8a80;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 110px;
+}
+
+.summary-time {
+    font-weight: 700;
+    color: #cfd8d2;
+    flex-shrink: 0;
+}
+
+.summary-time.timer-free {
+    color: #8a9a90;
+    /* font-style: italic; */
+    font-weight: 400;
+}
+
+.summary-time.timer-finished {
+    color: #d46060;
+}
+
+.summary-time.timer-warning {
+    animation: coc-flash 0.8s step-end infinite;
+}
+
+/* Fila con aprendiz asignado — mismo color que vista expandida */
+.summary-row.summary-row-apprentice {
+    border-color: #7a6020;
+    background: #1e1c12;
+}
+
+/* Fila con asistente de laboratorio asignado — mismo color que vista expandida */
+.summary-row.summary-row-assistant {
+    border-color: #206080;
+    background: #0e1a22;
+}
+
+/* ========================= */
 /* ACCOUNT LAYOUT */
 /* ========================= */
 
@@ -359,7 +497,7 @@ button:hover {
 /* Fila con aprendiz asignado */
 .compact-row.has-apprentice {
     border-color: #4a3a18;
-    background: #1e1c12;
+    background: #ddd08e;
     box-shadow: inset 0 0 0 1px rgba(240, 180, 40, 0.08);
 }
 
@@ -394,7 +532,6 @@ button:hover {
     font-size: 14px;
     color: var(--sage);
     white-space: nowrap;
-    overflow: hidden;
     text-overflow: ellipsis;
     text-shadow: 1px 1px black, 1px -1px black, -1px 1px black, -1px -1px black, 0 3px black;
     margin: 0 100px;
@@ -431,7 +568,7 @@ button:hover {
 /* Libre - blanco apagado */
 .compact-timer.timer-free {
     color: #8a9a90;
-    font-style: italic;
+    /* font-style: italic; */
 }
 
 /* Finalizado - rojo suave */
@@ -484,7 +621,6 @@ button:hover {
     color: var(--mint);
     transform: none;
 }
-
 
 .compact-name.builder-finished {
     color: var(--mint);
@@ -577,9 +713,15 @@ button:hover {
 }
 
 .compact-row.has-pets {
-    border-color: #4a1842;
-    background: #220e22;
+    /* border-color: #4a1842; */
+    background: #8f458f;
     box-shadow: inset 0 0 0 1px rgba(80, 180, 240, 0.08);
+}
+
+.compact-row.has-laboratory {
+    background: #45718f;
+    box-shadow: inset 0 0 0 1px rgba(80, 180, 240, 0.08);
+
 }
 
 .compact-row.has-pets:hover {
@@ -869,7 +1011,7 @@ button:hover {
 /* ========================= */
 
 .compact-row.goblin-row {
-    background: #0e1a0e;
+    background: #64af64;
     border-color: #1a3a1a;
 }
 

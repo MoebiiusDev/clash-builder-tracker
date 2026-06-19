@@ -99,7 +99,7 @@ function updatePotionPreview(accountId, type, count) {
     const minutes = Math.floor((totalMs % 3600000) / 60000);
 
     preview.innerHTML =
-        `Reducción total: <strong style="color:#f5c842">${hours}h ${minutes}m</strong>`;
+        `Reducción total: <strong style="color:#78ffa9">${hours}h ${minutes}m</strong>`;
     preview.style.color = "#aaa";
 }
 

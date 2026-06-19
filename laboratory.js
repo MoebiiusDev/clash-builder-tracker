@@ -195,13 +195,12 @@ if (saveLabAssistantBtn) {
 
             const now = Date.now();
 
-            let availableAt = now;
-
-            if (firstDone) {
-                availableAt = account.sharedHelperCooldown > now
+            // availableAt SIEMPRE deriva del cooldown global guardado.
+            // Si el cooldown global ya paso, el asistente queda disponible ya.
+            const availableAt =
+                account.sharedHelperCooldown > now
                     ? account.sharedHelperCooldown
                     : now;
-            }
 
             account.laboratory.assistant = {
 
@@ -267,12 +266,12 @@ function renderLaboratory(account) {
 
     return `
 
-        <div class="compact-row ${assistantAssigned ? 'has-assistant' : ''}">
+        <div class="compact-row has-laboratory ${assistantAssigned ? 'has-assistant' : ''}">
 
             <div class="compact-info">
 
                 <div class="compact-title">
-                    Laboratorio
+                    Investigación
                 </div>
 
                 <div class="compact-name">
@@ -331,7 +330,7 @@ function renderLabAssistant(account) {
 
     if (assistant.availableAt > now) {
         assistantStatus = formatTime(assistant.availableAt - now);
-        statusColor = "#f5c842";
+        statusColor = "#78ffa9";
     }
 
     return `
@@ -475,7 +474,7 @@ function updateLaboratoryTimers() {
 
             if (assistant.availableAt > now) {
                 assistantTimer.textContent = formatTime(assistant.availableAt - now);
-                assistantTimer.style.color = "#f5c842";
+                assistantTimer.style.color = "#78ffa9";
             } else {
                 assistantTimer.textContent = "Disponible";
                 assistantTimer.style.color = "#4ade80";
@@ -496,12 +495,19 @@ function updateLaboratoryTimers() {
 
                 research.finishTime -= reductionMs;
 
-                const newCooldown = account.sharedHelperCooldown > now
-                    ? account.sharedHelperCooldown
+                // SOLO usar sharedHelperCooldown existente si es futuro.
+                // Nunca recalcular desde now + 23h aquí para no romper el timer guardado.
+                const existingCooldown = account.sharedHelperCooldown;
+                const newCooldown = existingCooldown > now
+                    ? existingCooldown
                     : now + (23 * 60 * 60 * 1000);
 
-                account.sharedHelperCooldown = newCooldown;
-                assistant.availableAt = newCooldown;
+                // Solo actualizar sharedHelperCooldown si no había uno activo
+                if (existingCooldown <= now) {
+                    account.sharedHelperCooldown = newCooldown;
+                }
+
+                assistant.availableAt = account.sharedHelperCooldown;
                 assistant.firstDone = true;
 
                 if (!assistant.keepWorking) {

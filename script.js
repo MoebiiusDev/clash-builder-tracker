@@ -73,6 +73,28 @@ accounts.forEach(account => {
         // Si ya existe pero es pasado, lo dejamos como está (no resetear a Date.now())
     }
 
+    // RE-SINCRONIZACION AL CARGAR: si un ayudante esta activo (enabled/active)
+    // y su availableAt no coincide con el cooldown global guardado, se corrige.
+    // Esto evita que al recargar la pagina el contador "salte" de vuelta a 24h.
+    const globalCooldown = account.sharedHelperCooldown;
+
+    if (account.apprentice && account.apprentice.enabled) {
+        account.apprentice.availableAt = globalCooldown;
+    }
+
+    if (account.laboratory && account.laboratory.assistant && account.laboratory.assistant.enabled) {
+        account.laboratory.assistant.availableAt = globalCooldown;
+    }
+
+    if (account.helpers) {
+        if (account.helpers.alchemist && account.helpers.alchemist.active) {
+            account.helpers.alchemist.availableAt = globalCooldown;
+        }
+        if (account.helpers.digger && account.helpers.digger.active) {
+            account.helpers.digger.availableAt = globalCooldown;
+        }
+    }
+
     // keepWorking y sleepUntil en aprendiz y asistente lab
     if (account.apprentice.keepWorking === undefined) {
         account.apprentice.keepWorking = false;
@@ -93,6 +115,10 @@ accounts.forEach(account => {
             building: "",
             finishTime: null
         };
+    }
+
+    if (account.collapsed === undefined) {
+        account.collapsed = false;
     }
 
     if (!account.goblinLab) {
@@ -123,6 +149,7 @@ createAccountBtn.addEventListener("click", () => {
 
         id: Date.now(),
         name: playerName,
+        collapsed: false,
 
         builders: [],
 
@@ -205,35 +232,191 @@ function formatTime(ms) {
 // RENDER
 // =========================
 
+// =========================
+// TOGGLE VISTA RESUMIDA
+// =========================
+
+function toggleCollapse(accountId) {
+
+    const account =
+        accounts.find(acc => acc.id === accountId);
+
+    account.collapsed = !account.collapsed;
+
+    saveAccounts();
+    renderAccounts();
+}
+
+// =========================
+// VISTA RESUMIDA — helper de fila
+// =========================
+
+function getTimerSnapshot(finishTime) {
+
+    if (!finishTime) {
+        return { text: "Libre", className: "summary-time timer-free" };
+    }
+
+    const remaining = finishTime - Date.now();
+
+    if (remaining > 0) {
+        const className = remaining < 3600000
+            ? "summary-time timer-warning"
+            : "summary-time";
+        return { text: formatTime(remaining), className };
+    }
+
+    return { text: "Finalizado", className: "summary-time timer-finished" };
+}
+
+function renderSummaryRow(label, finishTime, assignedClass, idSuffix, accountId) {
+
+    const snap = getTimerSnapshot(finishTime);
+
+    return `
+        <div class="summary-row ${assignedClass || ""}">
+            <span class="summary-label">${label}</span>
+            <span
+                class="${snap.className}"
+                id="summary-${idSuffix}-${accountId}"
+            >
+                ${snap.text}
+            </span>
+        </div>
+    `;
+}
+
+function renderAccountSummary(account) {
+
+    let builderRows = "";
+
+    account.builders.forEach((builder, index) => {
+        const apprenticeAssigned =
+            account.apprentice &&
+            account.apprentice.enabled &&
+            account.apprentice.assignedBuilder === index;
+
+        builderRows += renderSummaryRow(
+            builder.building || `Constructor ${index + 1}`,
+            builder.finishTime,
+            apprenticeAssigned ? "summary-row-apprentice" : null,
+            `builder-${index}`,
+            account.id
+        );
+    });
+
+    const goblinApprentice =
+        account.apprentice &&
+        account.apprentice.enabled &&
+        account.apprentice.assignedBuilder === "goblin";
+
+    builderRows += renderSummaryRow(
+        account.goblinBuilder.building || "Duende constructor",
+        account.goblinBuilder.finishTime,
+        goblinApprentice ? "summary-row-apprentice" : null,
+        "goblin-builder",
+        account.id
+    );
+
+    const labAssistantActive =
+        account.laboratory.assistant &&
+        account.laboratory.assistant.enabled;
+
+    let labRows = renderSummaryRow(
+        account.laboratory.research.name || "Laboratorio",
+        account.laboratory.research.finishTime,
+        labAssistantActive ? "summary-row-assistant" : null,
+        "lab",
+        account.id
+    );
+
+    labRows += renderSummaryRow(
+        account.goblinLab.name || "Duende laboratorio",
+        account.goblinLab.finishTime,
+        null,
+        "goblin-lab",
+        account.id
+    );
+
+    const petsRows = renderSummaryRow(
+        account.pets.name || "Mascota",
+        account.pets.finishTime,
+        null,
+        "pets",
+        account.id
+    );
+
+    return `
+        <div class="summary-column">
+
+            <div class="summary-section-title">Constructores</div>
+            <div class="summary-section">${builderRows}</div>
+
+            <div class="summary-section-title">Laboratorio</div>
+            <div class="summary-section">${labRows}</div>
+
+            <div class="summary-section-title">Mascotas</div>
+            <div class="summary-section">${petsRows}</div>
+
+        </div>
+    `;
+}
+
+function updateSummaryTimers() {
+
+    accounts.forEach(account => {
+
+        if (!account.collapsed) return;
+
+        const items = [
+            ...account.builders.map((b, i) => [`builder-${i}`, b.finishTime]),
+            ["goblin-builder", account.goblinBuilder.finishTime],
+            ["lab", account.laboratory.research.finishTime],
+            ["goblin-lab", account.goblinLab.finishTime],
+            ["pets", account.pets.finishTime]
+        ];
+
+        items.forEach(([suffix, finishTime]) => {
+
+            const el = document.getElementById(
+                `summary-${suffix}-${account.id}`
+            );
+
+            if (!el) return;
+
+            const snap = getTimerSnapshot(finishTime);
+
+            el.textContent = snap.text;
+            el.className = snap.className;
+        });
+    });
+}
+
+// =========================
+// RENDER
+// =========================
+
 function renderAccounts() {
 
     accountsContainer.innerHTML = "";
 
+    const collapsedRow = document.createElement("div");
+    collapsedRow.className = "collapsed-row";
+
+    let hasCollapsed = false;
+
     accounts.forEach(account => {
 
         const card = document.createElement("div");
-        card.className = "account-card";
+        card.className = "account-card" + (account.collapsed ? " account-collapsed" : "");
 
-        card.innerHTML = `
+        const toggleLabel = account.collapsed ? "Expandir" : "Resumir";
 
-            <div class="account-header">
-                <div class="account-name">${account.name}</div>
-                <div style="display:flex; gap:8px; align-items:center;">
-                    <button
-                        class="cleanup-account-btn"
-                        onclick="clearAllAccount(${account.id})"
-                    >
-                        Limpiar Todo
-                    </button>
-                    <button
-                        class="delete-account-btn"
-                        onclick="deleteAccount(${account.id})"
-                    >
-                        Eliminar Cuenta
-                    </button>
-                </div>
-            </div>
+        const body = account.collapsed
 
+            ? renderAccountSummary(account)
+
+            : `
             <div class="account-layout">
 
                 <div class="account-main">
@@ -249,7 +432,7 @@ function renderAccounts() {
                     ${renderBuilders(account)}
 
                     <div class="section-title-row lb">
-                        <div class="section-title">Investigacion</div>
+                        <div class="section-title">Laboratorio</div>
                         <button
                             class="potion-btn"
                             onclick="openPotionModal(${account.id}, 'research')"
@@ -262,7 +445,7 @@ function renderAccounts() {
                     </div>
 
                     <div class="section-title-row lb">
-                        <div class="section-title">Mascotas</div>
+                        <div class="section-title">Caseta de Animales</div>
                         <button
                             class="potion-btn"
                             onclick="openPotionModal(${account.id}, 'pet')"
@@ -298,8 +481,59 @@ function renderAccounts() {
             </div>
         `;
 
-        accountsContainer.appendChild(card);
+        const headerActions = account.collapsed
+            ? `
+                <button
+                    class="collapse-account-btn"
+                    onclick="toggleCollapse(${account.id})"
+                >
+                    ${toggleLabel}
+                </button>
+            `
+            : `
+                <button
+                    class="collapse-account-btn"
+                    onclick="toggleCollapse(${account.id})"
+                >
+                    ${toggleLabel}
+                </button>
+                <button
+                    class="cleanup-account-btn"
+                    onclick="clearAllAccount(${account.id})"
+                >
+                    Limpiar Todo
+                </button>
+                <button
+                    class="delete-account-btn"
+                    onclick="deleteAccount(${account.id})"
+                >
+                    Eliminar Cuenta
+                </button>
+            `;
+
+        card.innerHTML = `
+
+            <div class="account-header">
+                <div class="account-name">${account.name}</div>
+                <div style="display:flex; gap:8px; align-items:center;">
+                    ${headerActions}
+                </div>
+            </div>
+
+            ${body}
+        `;
+
+        if (account.collapsed) {
+            collapsedRow.appendChild(card);
+            hasCollapsed = true;
+        } else {
+            accountsContainer.appendChild(card);
+        }
     });
+
+    if (hasCollapsed) {
+        accountsContainer.appendChild(collapsedRow);
+    }
 }
 
 // =========================
@@ -314,6 +548,7 @@ function updateAllTimers() {
     updateGoblinBuilderTimers();
     updateGoblinLabTimers();
     updateSharedTimerDisplay();
+    updateSummaryTimers();
 }
 
 setInterval(updateAllTimers, 1000);
@@ -333,7 +568,7 @@ function renderSharedTimer(account) {
         ? formatTime(remaining)
         : "⚡ Todos disponibles";
 
-    const color = isActive ? "#f5c842" : "#4ade80";
+    const color = isActive ? "#78ffa9" : "#4ade80";
 
     return `
         <div class="shared-timer-bar">
@@ -455,7 +690,7 @@ function updateSharedTimerDisplay() {
 
         if (remaining > 0) {
             el.textContent = formatTime(remaining);
-            el.style.color = "#f5c842";
+            el.style.color = "#78ffa9";
         } else {
             el.textContent = "⚡ Todos disponibles";
             el.style.color = "#4ade80";

@@ -157,7 +157,7 @@ function renderAlchemist(account) {
 
     if (isActive) {
         statusText = formatTime(remaining);
-        statusColor = "#f5c842";
+        statusColor = "#78ffa9";
     }
 
     return `
@@ -228,7 +228,7 @@ function renderDigger(account) {
 
     if (isActive) {
         statusText = formatTime(remaining);
-        statusColor = "#f5c842";
+        statusColor = "#78ffa9";
     }
 
     return `
@@ -296,7 +296,7 @@ function updateHelperTimers() {
             if (helper.active && remaining > 0) {
 
                 el.textContent = formatTime(remaining);
-                el.style.color = "#f5c842";
+                el.style.color = "#78ffa9";
 
                 if (card) card.classList.remove("helper-ready");
 
